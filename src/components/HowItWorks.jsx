@@ -70,7 +70,7 @@ const HowItWorks = () => {
           transition={{ duration: 0.8 }}
           className="text-center mb-12 sm:mb-16 md:mb-20"
         >
-          <h2 className={`text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-semibold mb-4 sm:mb-6 pb-5 ${
+          <h2 className={`text-3xl sm:text-4xl md:text-5xl lg:text-5xl font-semibold mb-4 sm:mb-6 pb-5 ${
             isDark ? 'text-white' : 'text-black'
           }`}>
             How <span className='text-orange-500'>It Works</span>
@@ -202,7 +202,7 @@ const HowItWorks = () => {
 
                   {/* Content */}
                   <div className="text-center mt-12">
-                    <h3 className={`text-xl font-bold mb-4 group-hover:text-orange-600 transition-colors duration-300 ${
+                    <h3 className={`text-xl font-semibold mb-4 group-hover:text-orange-600 transition-colors duration-300 ${
                       isDark ? 'text-white' : 'text-slate-900'
                     }`}>
                       {step.title}
