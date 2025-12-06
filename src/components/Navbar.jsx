@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { Moon, Sun, Menu, X, ShoppingBag } from 'lucide-react';
 import { useTheme } from '../contexts/ThemeContext';
+import { Link } from 'react-router-dom';
 
 const Navbar = () => {
   const [isOpen, setIsOpen] = useState(false);
@@ -20,12 +21,14 @@ const Navbar = () => {
 
             {/* Logo */}
             <div className="flex items-center gap-3">
-              <div className="bg-orange-500/20 backdrop-blur-md border border-orange-500/30 rounded-xl p-2.5 shadow-lg">
+              <Link to="/" className="bg-orange-500/20 backdrop-blur-md border border-orange-500/30 rounded-xl p-2.5 shadow-lg">
                 <ShoppingBag className="w-6 h-6 text-orange-500" />
-              </div>
+              </Link>
+              <Link to="/">
               <span className={`text-xl font-bold tracking-tight ${isDark ? 'text-white' : 'text-gray-900'}`}>
                 Garments<span className="text-orange-500">Track</span>
               </span>
+              </Link>
             </div>
 
             {/* Desktop Nav Links */}

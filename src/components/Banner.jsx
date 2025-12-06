@@ -103,7 +103,7 @@ function Banner() {
               </motion.button>
             </motion.div>
 
-            <motion.div variants={itemVariants} className={`grid grid-cols-3 gap-6 mt-12 pt-8 border-t ${isDark ? 'border grau-700' : 'border-gray-200'}`}>
+            <motion.div variants={itemVariants} className={`grid grid-cols-3 gap-6 mt-12 pt-8 border-t ${isDark ? 'border-t border-orange-500' : 'border-gray-200'}`}>
               <div className="text-center lg:text-left">
                 <div className="text-3xl text-orange-500 mb-1">2.5k+</div>
                 <div className={`text-sm ${isDark ? 'text-gray-400' : 'text-gray-600'}`}>Orders Delivered</div>
