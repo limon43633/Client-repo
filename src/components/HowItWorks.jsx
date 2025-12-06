@@ -1,9 +1,12 @@
 import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
+import { useTheme } from '../contexts/ThemeContext';
 
 const HowItWorks = () => {
   const [currentStep, setCurrentStep] = useState(0);
   const [isMobile, setIsMobile] = useState(false);
+
+  const { isDark } = useTheme();
 
   const steps = [
     {
@@ -53,7 +56,11 @@ const HowItWorks = () => {
   }, [steps.length]);
 
   return (
-    <section className="py-16 sm:py-20 md:py-24 bg-gradient-to-br from-slate-50 via-white to-slate-100 overflow-hidden">
+    <section className={`py-16 sm:py-20 md:py-30 overflow-hidden transition-colors duration-300 ${
+      isDark 
+        ? 'bg-gradient-to-br from-gray-900 via-gray-800 to-gray-900' 
+        : 'bg-gradient-to-br from-slate-50 via-white to-slate-100'
+    }`}>
       <div className="max-w-[1280px] mx-auto px-4 sm:px-6 lg:px-8">
         {/* Header */}
         <motion.div
@@ -63,10 +70,14 @@ const HowItWorks = () => {
           transition={{ duration: 0.8 }}
           className="text-center mb-12 sm:mb-16 md:mb-20"
         >
-          <h2 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-semibold text-black bg-clip-text mb-4 sm:mb-6">
+          <h2 className={`text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-semibold mb-4 sm:mb-6 pb-5 ${
+            isDark ? 'text-white' : 'text-black'
+          }`}>
             How <span className='text-orange-500'>It Works</span>
           </h2>
-          <p className="text-lg sm:text-xl text-gray-500 max-w-3xl mx-auto leading-relaxed px-4">
+          <p className={`text-lg sm:text-xl max-w-3xl mx-auto leading-relaxed px-4 pb-5 ${
+            isDark ? 'text-gray-400' : 'text-gray-500'
+          }`}>
             Track your garment order from placement to delivery with complete transparency. 
             Every step is monitored and updated in real-time.
           </p>
@@ -84,7 +95,11 @@ const HowItWorks = () => {
                   whileInView={{ opacity: 1, scale: 1, y: 0 }}
                   viewport={{ once: true }}
                   transition={{ duration: 0.6, delay: index * 0.1 }}
-                  className={`group relative p-6 sm:p-8 rounded-3xl bg-white/80 backdrop-blur-xl border border-white/50 shadow-2xl hover:shadow-orange-500/25 transition-all duration-500 ${
+                  className={`group relative p-6 sm:p-8 rounded-3xl backdrop-blur-xl shadow-2xl hover:shadow-orange-500/25 transition-all duration-500 ${
+                    isDark 
+                      ? 'bg-gray-800/80 border border-gray-700/50' 
+                      : 'bg-white/80 border border-white/50'
+                  } ${
                     currentStep === index ? 'ring-4 ring-orange-500/50 shadow-orange-500/25 scale-[1.02]' : ''
                   }`}
                 >
@@ -103,7 +118,9 @@ const HowItWorks = () => {
                       className={`w-14 h-14 sm:w-16 sm:h-16 rounded-2xl flex items-center justify-center text-xl sm:text-2xl font-bold shadow-2xl border-4 ${
                         currentStep === index 
                           ? 'bg-gradient-to-r from-orange-500 to-orange-600 text-white shadow-orange-500/50' 
-                          : 'bg-white/70 text-slate-600 border-slate-200/50 group-hover:border-orange-300/50'
+                          : isDark 
+                            ? 'bg-gray-700/70 text-gray-300 border-gray-600/50 group-hover:border-orange-300/50'
+                            : 'bg-white/70 text-slate-600 border-slate-200/50 group-hover:border-orange-300/50'
                       }`}
                     >
                       {step.icon}
@@ -117,10 +134,14 @@ const HowItWorks = () => {
 
                   {/* Content */}
                   <div className="text-center mt-10 sm:mt-12">
-                    <h3 className="text-lg sm:text-xl font-bold text-slate-900 mb-3 sm:mb-4 group-hover:text-orange-600 transition-colors duration-300">
+                    <h3 className={`text-lg sm:text-xl font-bold mb-3 sm:mb-4 group-hover:text-orange-600 transition-colors duration-300 ${
+                      isDark ? 'text-white' : 'text-slate-900'
+                    }`}>
                       {step.title}
                     </h3>
-                    <p className="text-slate-600 leading-relaxed text-sm sm:text-base px-2">
+                    <p className={`leading-relaxed text-sm sm:text-base px-2 ${
+                      isDark ? 'text-gray-400' : 'text-slate-600'
+                    }`}>
                       {step.description}
                     </p>
                   </div>
@@ -142,7 +163,11 @@ const HowItWorks = () => {
                     y: -10,
                     transition: { duration: 0.3 }
                   }}
-                  className={`group relative p-8 rounded-3xl bg-white/80 backdrop-blur-xl border border-white/50 shadow-2xl hover:shadow-orange-500/25 transition-all duration-500 h-full ${
+                  className={`group relative p-8 rounded-3xl backdrop-blur-xl shadow-2xl hover:shadow-orange-500/25 transition-all duration-500 h-full ${
+                    isDark 
+                      ? 'bg-gray-800/80 border border-gray-700/50' 
+                      : 'bg-white/80 border border-white/50'
+                  } ${
                     currentStep === index ? 'ring-4 ring-orange-500/50 shadow-orange-500/25 scale-[1.02]' : ''
                   }`}
                 >
@@ -161,7 +186,9 @@ const HowItWorks = () => {
                       className={`w-16 h-16 rounded-2xl flex items-center justify-center text-2xl font-bold shadow-2xl border-4 ${
                         currentStep === index 
                           ? 'bg-gradient-to-r from-orange-500 to-orange-600 text-white shadow-orange-500/50' 
-                          : 'bg-white/70 text-slate-600 border-slate-200/50 group-hover:border-orange-300/50'
+                          : isDark 
+                            ? 'bg-gray-700/70 text-gray-300 border-gray-600/50 group-hover:border-orange-300/50'
+                            : 'bg-white/70 text-slate-600 border-slate-200/50 group-hover:border-orange-300/50'
                       }`}
                     >
                       {step.icon}
@@ -175,10 +202,14 @@ const HowItWorks = () => {
 
                   {/* Content */}
                   <div className="text-center mt-12">
-                    <h3 className="text-xl font-bold text-slate-900 mb-4 group-hover:text-orange-600 transition-colors duration-300">
+                    <h3 className={`text-xl font-bold mb-4 group-hover:text-orange-600 transition-colors duration-300 ${
+                      isDark ? 'text-white' : 'text-slate-900'
+                    }`}>
                       {step.title}
                     </h3>
-                    <p className="text-slate-600 leading-relaxed">
+                    <p className={`leading-relaxed ${
+                      isDark ? 'text-gray-400' : 'text-slate-600'
+                    }`}>
                       {step.description}
                     </p>
                   </div>
