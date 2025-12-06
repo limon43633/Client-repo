@@ -1,12 +1,12 @@
 import React, { useState } from 'react';
 import { Moon, Sun, Menu, X, ShoppingBag } from 'lucide-react';
+import { useTheme } from '../contexts/ThemeContext'; // Import the custom hook
 
 const Navbar = () => {
   const [isOpen, setIsOpen] = useState(false);
-  const [isDark, setIsDark] = useState(false);
+  const { isDark, toggleTheme } = useTheme(); // Use the theme context
 
   const toggleMenu = () => setIsOpen(!isOpen);
-  const toggleDark = () => setIsDark(!isDark);
 
   return (
     <nav className={`${isDark ? 'bg-gray-900' : 'bg-white'} shadow-md transition-colors duration-300`}>
@@ -35,7 +35,7 @@ const Navbar = () => {
           {/* Desktop Right Side Buttons */}
           <div className="hidden md:flex items-center gap-4">
             <button
-              onClick={toggleDark}
+              onClick={toggleTheme} // Use toggleTheme from context
               className={`p-2 rounded-lg ${isDark ? 'bg-gray-800 text-yellow-400' : 'bg-gray-100 text-gray-700'} hover:opacity-80 transition-opacity`}
               aria-label="Toggle dark mode"
             >
@@ -52,7 +52,7 @@ const Navbar = () => {
           {/* Mobile Menu Button */}
           <div className="md:hidden flex items-center gap-3">
             <button
-              onClick={toggleDark}
+              onClick={toggleTheme} // Use toggleTheme from context
               className={`p-2 rounded-lg ${isDark ? 'bg-gray-800 text-yellow-400' : 'bg-gray-100 text-gray-700'}`}
               aria-label="Toggle dark mode"
             >
