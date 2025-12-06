@@ -1,125 +1,154 @@
 import React, { useState } from 'react';
 import { Moon, Sun, Menu, X, ShoppingBag } from 'lucide-react';
-import { useTheme } from '../contexts/ThemeContext'; // Import the custom hook
+import { useTheme } from '../contexts/ThemeContext';
 
 const Navbar = () => {
   const [isOpen, setIsOpen] = useState(false);
-  const { isDark, toggleTheme } = useTheme(); // Use the theme context
+  const { isDark, toggleTheme } = useTheme();
 
   const toggleMenu = () => setIsOpen(!isOpen);
 
   return (
-    <nav className={`${isDark ? 'bg-gray-900' : 'bg-white'} shadow-md transition-colors duration-300`}>
-      <div className="max-w-[1280px] mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex justify-between items-center h-16">
-          {/* Logo */}
-          <div className="flex items-center gap-2">
-            <div className="bg-orange-400 rounded-lg p-2">
-              <ShoppingBag className="w-6 h-6 text-white" />
+    <>
+      <nav className={`fixed top-0 left-0 right-0 z-50 backdrop-blur-xl ${
+        isDark 
+          ? 'bg-gray-900/70 border-b border-white/10' 
+          : 'bg-white/80 border-b border-black/5'
+      } shadow-lg`}>
+        <div className="max-w-[1280px] mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="flex justify-between items-center h-16">
+
+            {/* Logo */}
+            <div className="flex items-center gap-3">
+              <div className="bg-orange-500/20 backdrop-blur-md border border-orange-500/30 rounded-xl p-2.5 shadow-lg">
+                <ShoppingBag className="w-6 h-6 text-orange-500" />
+              </div>
+              <span className={`text-xl font-bold tracking-tight ${isDark ? 'text-white' : 'text-gray-900'}`}>
+                Garments<span className="text-orange-500">Track</span>
+              </span>
             </div>
-            <span className={`text-xl font-semibold ${isDark ? 'text-white' : 'text-gray-900'}`}>
-              Garments<span className="text-orange-400">Track</span>
-            </span>
-          </div>
 
-          {/* Desktop Navigation Links */}
-          <div className="hidden md:flex items-center gap-8">
-            <a href="/" className={`${isDark ? 'text-gray-300 hover:text-white' : 'text-gray-700 hover:text-gray-900'} transition-colors`}>
-              Home
-            </a>
-            <a href="products" className={`${isDark ? 'text-gray-300 hover:text-white' : 'text-gray-700 hover:text-gray-900'} transition-colors`}>
-              All Products
-            </a>
-          </div>
+            {/* Desktop Nav Links */}
+            <div className="hidden md:flex items-center gap-10">
+              {['Home', 'All Products'].map((item) => (
+                <a
+                  key={item}
+                  href={item === 'Home' ? '/' : '/products'}
+                  className={`relative text-sm font-medium transition-all duration-300 ${
+                    isDark 
+                      ? 'text-gray-300 hover:text-white' 
+                      : 'text-gray-700 hover:text-gray-900'
+                  } after:absolute after:bottom-0 after:left-0 after:w-0 after:h-0.5 after:bg-orange-500 after:transition-all after:duration-300 hover:after:w-full`}
+                >
+                  {item}
+                </a>
+              ))}
+            </div>
 
-          {/* Desktop Right Side Buttons */}
-          <div className="hidden md:flex items-center gap-4">
-            <button
-              onClick={toggleTheme} // Use toggleTheme from context
-              className={`p-2 rounded-lg ${isDark ? 'bg-gray-800 text-yellow-400' : 'bg-gray-100 text-gray-700'} hover:opacity-80 transition-opacity`}
-              aria-label="Toggle dark mode"
-            >
-              {isDark ? <Sun className="w-5 h-5" /> : <Moon className="w-5 h-5" />}
-            </button>
-            <button className={`px-4 py-2 rounded-lg ${isDark ? 'text-white hover:bg-gray-800' : 'text-gray-700 hover:bg-gray-100'} transition-colors`}>
-              Log in
-            </button>
-            <button className="px-4 py-2 bg-orange-400 text-white rounded-lg hover:bg-orange-500 transition-colors">
-              Register
-            </button>
-          </div>
+            {/* Desktop Right Actions */}
+            <div className="hidden md:flex items-center gap-4">
+              {/* Theme Toggle */}
+              <button
+                onClick={toggleTheme}
+                className={`p-2.5 rounded-xl backdrop-blur-md transition-all duration-300 ${
+                  isDark
+                    ? 'bg-white/10 hover:bg-white/20 text-yellow-400 border border-white/20'
+                    : 'bg-black/5 hover:bg-black/10 text-gray-700 border border-black/10'
+                }`}
+              >
+                {isDark ? <Sun className="w-5 h-5" /> : <Moon className="w-5 h-5" />}
+              </button>
 
-          {/* Mobile Menu Button */}
-          <div className="md:hidden flex items-center gap-3">
-            <button
-              onClick={toggleTheme} // Use toggleTheme from context
-              className={`p-2 rounded-lg ${isDark ? 'bg-gray-800 text-yellow-400' : 'bg-gray-100 text-gray-700'}`}
-              aria-label="Toggle dark mode"
-            >
-              {isDark ? <Sun className="w-5 h-5" /> : <Moon className="w-5 h-5" />}
-            </button>
-            <button
-              onClick={toggleMenu}
-              className={`p-2 rounded-lg ${isDark ? 'text-white' : 'text-gray-700'}`}
-              aria-label="Toggle menu"
-            >
-              {isOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
-            </button>
-          </div>
-        </div>
-      </div>
+              <button className={`px-5 py-2.5 rounded-xl font-medium transition-all duration-300 backdrop-blur-md ${
+                isDark
+                  ? 'text-gray-300 hover:bg-white/10 border border-white/10'
+                  : 'text-gray-700 hover:bg-black/5 border border-black/10'
+              }`}>
+                Log in
+              </button>
 
-      {/* Mobile Slide-in Menu */}
-      <div
-        className={`fixed top-0 right-0 h-full w-64 ${isDark ? 'bg-gray-900' : 'bg-white'} shadow-2xl transform transition-transform duration-300 ease-in-out z-50 ${
-          isOpen ? 'translate-x-0' : 'translate-x-full'
-        } md:hidden`}
-      >
-        <div className="flex flex-col h-full p-6">
-          <div className="flex justify-end mb-8">
-            <button
-              onClick={toggleMenu}
-              className={`p-2 rounded-lg ${isDark ? 'text-white hover:bg-gray-800' : 'text-gray-700 hover:bg-gray-100'}`}
-              aria-label="Close menu"
-            >
-              <X className="w-6 h-6" />
-            </button>
-          </div>
+              <button className="px-5 py-2.5 bg-gradient-to-r from-orange-500 to-orange-600 text-white rounded-xl font-medium shadow-lg hover:shadow-orange-500/25 hover:scale-105 transition-all duration-300">
+                Register
+              </button>
+            </div>
 
-          <div className="flex flex-col gap-6">
-            <a
-              href="#home"
-              onClick={toggleMenu}
-              className={`text-lg ${isDark ? 'text-gray-300 hover:text-white' : 'text-gray-700 hover:text-gray-900'} transition-colors`}
-            >
-              Home
-            </a>
-            <a
-              href="#products"
-              onClick={toggleMenu}
-              className={`text-lg ${isDark ? 'text-gray-300 hover:text-white' : 'text-gray-700 hover:text-gray-900'} transition-colors`}
-            >
-              All Products
-            </a>
-            <div className="border-t border-gray-200 dark:border-gray-700 my-4"></div>
-            <button className={`px-4 py-2 rounded-lg text-left ${isDark ? 'text-white hover:bg-gray-800' : 'text-gray-700 hover:bg-gray-100'} transition-colors`}>
-              Log in
-            </button>
-            <button className="px-4 py-2 bg-orange-400 text-white rounded-lg hover:bg-orange-500 transition-colors">
-              Register
-            </button>
+            {/* Mobile Menu Button */}
+            <div className="md:hidden flex items-center gap-3">
+              <button
+                onClick={toggleTheme}
+                className={`p-2 rounded-lg backdrop-blur-md ${
+                  isDark ? 'bg-white/10 text-yellow-400' : 'bg-black/5 text-gray-700'
+                }`}
+              >
+                {isDark ? <Sun className="w-5 h-5" /> : <Moon className="w-5 h-5" />}
+              </button>
+              <button
+                onClick={toggleMenu}
+                className="p-2"
+              >
+                {isOpen ? <X className={`w-6 h-6 ${isDark ? 'text-white' : 'text-gray-900'}`} /> : <Menu className={`w-6 h-6 ${isDark ? 'text-white' : 'text-gray-900'}`} />}
+              </button>
+            </div>
           </div>
         </div>
-      </div>
+      </nav>
 
-      {/* Overlay */}
-      {isOpen && (
-        <div
-          className="fixed inset-0 bg-black bg-opacity-50 z-40 md:hidden"
+      {/* Glassy Mobile Menu */}
+      <div className={`fixed inset-0 z-50 transition-opacity duration-300 ${isOpen ? 'opacity-100 pointer-events-auto' : 'opacity-0 pointer-events-none'}`}>
+        {/* Backdrop */}
+        <div 
+          className="absolute inset-0 bg-black/40 backdrop-blur-sm"
           onClick={toggleMenu}
-        ></div>
-      )}
-    </nav>
+        />
+
+        {/* Slide-in Panel */}
+        <div className={`absolute top-0 right-0 h-full w-80 shadow-2xl transform transition-transform duration-500 ease-out ${
+          isOpen ? 'translate-x-0' : 'translate-x-full'
+        } ${isDark ? 'bg-gray-900/90' : 'bg-white/90'} backdrop-blur-2xl border-l ${isDark ? 'border-white/10' : 'border-black/10'}`}>
+          <div className="p-6">
+            <div className="flex justify-between items-center mb-10">
+              <div className="flex items-center gap-3">
+                <div className="bg-orange-500/20 rounded-xl p-2.5">
+                  <ShoppingBag className="w-6 h-6 text-orange-500" />
+                </div>
+                <span className={`text-xl font-bold ${isDark ? 'text-white' : 'text-gray-900'}`}>
+                  Garments<span className="text-orange-500">Track</span>
+                </span>
+              </div>
+              <button onClick={toggleMenu} className="p-2">
+                <X className={`w-6 h-6 ${isDark ? 'text-white' : 'text-gray-900'}`} />
+              </button>
+            </div>
+
+            <nav className="flex flex-col gap-6">
+              {['Home', 'All Products'].map((item) => (
+                <a
+                  key={item}
+                  href={item === 'Home' ? '/' : '/products'}
+                  onClick={toggleMenu}
+                  className={`text-lg font-medium transition-colors ${
+                    isDark ? 'text-gray-300 hover:text-white' : 'text-gray-700 hover:text-gray-900'
+                  }`}
+                >
+                  {item}
+                </a>
+              ))}
+            </nav>
+
+            <div className="mt-10 space-y-4">
+              <button className={`w-full py-3 rounded-xl font-medium transition-all ${
+                isDark ? 'text-gray-300 hover:bg-white/10' : 'text-gray-700 hover:bg-black/5'
+              }`}>
+                Log in
+              </button>
+              <button className="w-full py-3 bg-gradient-to-r from-orange-500 to-orange-600 text-white rounded-xl font-medium shadow-lg hover:shadow-orange-500/30 transition-all">
+                Register
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </>
   );
 };
 

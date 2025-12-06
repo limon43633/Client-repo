@@ -27,7 +27,7 @@ function Banner() {
   ];
 
   return (
-    <div className={`relative overflow-hidden transition-colors duration-300 ${
+    <div className={`relative py-15 overflow-hidden transition-colors duration-300 ${
       isDark 
         ? 'bg-gradient-to-br from-gray-900 via-gray-800 to-gray-900' 
         : 'bg-gradient-to-br from-orange-50 via-white to-amber-50'
@@ -95,7 +95,7 @@ function Banner() {
 
             <motion.div variants={itemVariants} className="flex flex-col sm:flex-row gap-4 justify-center lg:justify-start">
               <motion.button whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }} className="inline-flex items-center justify-center px-8 py-4 bg-gradient-to-r from-orange-400 to-orange-500 text-white rounded-lg shadow-lg hover:shadow-xl transition-shadow gap-2 group">
-                <span>Get Started Free</span>
+                               <span>Get Started Free</span>
                 <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
               </motion.button>
               <motion.button whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }} className={`inline-flex items-center justify-center px-8 py-4 rounded-lg shadow-md hover:shadow-lg transition-shadow border-2 ${isDark ? 'bg-gray-800 text-orange-400 border-gray-700' : 'bg-white text-orange-500 border-orange-100'}`}>
@@ -103,7 +103,7 @@ function Banner() {
               </motion.button>
             </motion.div>
 
-            <motion.div variants={itemVariants} className={`grid grid-cols-3 gap-6 mt-12 pt-8 border-t ${isDark ? 'border-gray-700' : 'border-gray-200'}`}>
+            <motion.div variants={itemVariants} className={`grid grid-cols-3 gap-6 mt-12 pt-8 border-t ${isDark ? 'border grau-700' : 'border-gray-200'}`}>
               <div className="text-center lg:text-left">
                 <div className="text-3xl text-orange-500 mb-1">2.5k+</div>
                 <div className={`text-sm ${isDark ? 'text-gray-400' : 'text-gray-600'}`}>Orders Delivered</div>
@@ -119,11 +119,11 @@ function Banner() {
             </motion.div>
           </motion.div>
 
-          {/* RIGHT SIDE - PREMIUM LUXURY GARMENT GALLERY (2025 DESIGN) */}
+          {/* RIGHT SIDE - REFINED PROFESSIONAL ANIMATION (2025 Luxury Standard) */}
           <motion.div
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
-            transition={{ duration: 1 }}
+            transition={{ duration: 1.2, ease: "easeOut" }}
             className="relative"
           >
             {/* Floating Ambient Glows */}
@@ -142,16 +142,16 @@ function Banner() {
 
               {/* Hero Tall Image */}
               <motion.div
-                initial={{ opacity: 0, y: 80, scale: 0.9 }}
-                animate={{ opacity: 1, y: 0, scale: 1 }}
-                transition={{ duration: 0.9, ease: "easeOut" }}
-                whileHover={{ scale: 1.03 }}
+                initial={{ opacity: 0, y: 60 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.9, ease: "easeOut", delay: 0.2 }}
+                whileHover={{ y: -8, transition: { duration: 0.4 } }}
                 className="col-span-2 row-span-2 relative rounded-3xl overflow-hidden shadow-2xl group cursor-pointer"
               >
                 <img
                   src="https://images.unsplash.com/photo-1585487000160-6ebcfceb0d03?w=1200&q=90&fm=webp"
                   alt="Premium garment atelier"
-                  className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
+                  className="w-full h-full object-cover transition-transform duration-1000 group-hover:scale-110"
                 />
                 <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500 flex items-end p-8">
                   <p className="text-white font-semibold text-lg tracking-wider">Crafted to Perfection</p>
@@ -159,27 +159,53 @@ function Banner() {
               </motion.div>
 
               {/* Top Row */}
-              <motion.div initial={{ opacity: 0, y: 60 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.3 }} whileHover={{ y: -8 }} className="relative rounded-2xl overflow-hidden shadow-xl">
+              <motion.div
+                initial={{ opacity: 0, y: 50 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.8, ease: "easeOut", delay: 0.4 }}
+                whileHover={{ y: -6, transition: { duration: 0.4 } }}
+                className="relative rounded-2xl overflow-hidden shadow-xl"
+              >
                 <img src="https://images.unsplash.com/photo-1604176354204-9268737828e4?w=800&q=90&fm=webp" alt="Designer sketching" className="w-full h-full object-cover aspect-square" />
               </motion.div>
-              <motion.div initial={{ opacity: 0, y: 60 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.4 }} whileHover={{ y: -8 }} className="relative rounded-2xl overflow-hidden shadow-xl">
+
+              <motion.div
+                initial={{ opacity: 0, y: 50 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.8, ease: "easeOut", delay: 0.5 }}
+                whileHover={{ y: -6, transition: { duration: 0.4 } }}
+                className="relative rounded-2xl overflow-hidden shadow-xl"
+              >
                 <img src="https://i.ibb.co.com/Kp9RsNXc/pngtree-a-variety-of-luxurious-fabric-textures-displayed-at-a-tailor-shop-image-13803587.png" alt="Premium fabrics" className="w-full h-full object-cover aspect-square" />
               </motion.div>
 
               {/* Middle Row */}
-              <motion.div initial={{ opacity: 0, y: 80 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.5 }} whileHover={{ y: -8 }} className="relative rounded-2xl overflow-hidden shadow-xl">
+              <motion.div
+                initial={{ opacity: 0, y: 50 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.8, ease: "easeOut", delay: 0.6 }}
+                whileHover={{ y: -6, transition: { duration: 0.4 } }}
+                className="relative rounded-2xl overflow-hidden shadow-xl"
+              >
                 <img src="https://i.ibb.co.com/ZpRZSnW2/medium-shot-women-testing-colours-23-2150538657.avif" alt="Fashion workspace" className="w-full h-full object-cover aspect-[4/5]" />
               </motion.div>
-              <motion.div initial={{ opacity: 0, y: 80 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.6 }} whileHover={{ y: -8 }} className="relative rounded-2xl overflow-hidden shadow-xl">
+
+              <motion.div
+                initial={{ opacity: 0, y: 50 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.8, ease: "easeOut", delay: 0.7 }}
+                whileHover={{ y: -6, transition: { duration: 0.4 } }}
+                className="relative rounded-2xl overflow-hidden shadow-xl"
+              >
                 <img src="https://i.ibb.co.com/3ykWjTXB/close-up-of-t-shirts-on-hangers-apparel-background-photo.jpg" alt="Finished garments" className="w-full h-full object-cover aspect-[4/5]" />
               </motion.div>
 
               {/* Bottom Wide Image */}
               <motion.div
-                initial={{ opacity: 0, y: 100 }}
+                initial={{ opacity: 0, y: 70 }}
                 animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: 0.7, duration: 0.9 }}
-                whileHover={{ scale: 1.02 }}
+                transition={{ duration: 1, ease: "easeOut", delay: 0.8 }}
+                whileHover={{ y: -8, transition: { duration: 0.4 } }}
                 className="col-span-4 relative rounded-3xl overflow-hidden shadow-2xl mt-4 group"
               >
                 <img
