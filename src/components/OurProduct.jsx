@@ -7,7 +7,7 @@ const OurProducts = () => {
   if (loading) {
     return (
       <div className="flex justify-center items-center min-h-[400px]">
-        <div className="animate-spin rounded-full h-16 w-16 border-t-4 border-b-4 border-blue-600"></div>
+        <div className="animate-spin rounded-full h-16 w-16 border-t-4 border-b-4 border-orange-500"></div>
       </div>
     );
   }
@@ -21,8 +21,9 @@ const OurProducts = () => {
   }
 
   return (
-    <section className="py-16 px-4 bg-gray-50">
-      <div className="max-w-7xl mx-auto">
+    <section className="py-16">
+      {/* Fixed Container - Matching Banner */}
+      <div className="max-w-[1280px] mx-auto px-4 sm:px-6 lg:px-8">
         {/* Section Header */}
         <div className="text-center mb-12">
           <h2 className="text-4xl font-bold text-gray-800 mb-4">
@@ -38,7 +39,7 @@ const OurProducts = () => {
           <select
             value={sortBy}
             onChange={(e) => setSortBy(e.target.value)}
-            className="px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+            className="px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-500"
           >
             <option value="latest">Latest</option>
             <option value="price-low">Price: Low to High</option>
@@ -48,7 +49,7 @@ const OurProducts = () => {
 
         {/* Products Grid */}
         {homeProducts.length > 0 ? (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8">
             {homeProducts.map((product) => (
               <ProductCard key={product._id} product={product} />
             ))}

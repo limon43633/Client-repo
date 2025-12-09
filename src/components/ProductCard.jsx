@@ -11,7 +11,7 @@ const ProductCard = ({ product }) => {
           className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-300"
         />
         {product.category && (
-          <span className="absolute top-3 right-3 bg-blue-600 text-white px-3 py-1 rounded-full text-xs font-semibold">
+          <span className="absolute top-3 right-3 bg-orange-500 text-white px-3 py-1 rounded-full text-xs font-semibold">
             {product.category}
           </span>
         )}
@@ -29,7 +29,7 @@ const ProductCard = ({ product }) => {
 
         <div className="flex items-center justify-between mb-4">
           <div>
-            <p className="text-2xl font-bold text-blue-600">
+            <p className="text-2xl font-bold text-orange-500">
               ৳{product.price}
             </p>
             <p className="text-xs text-gray-500">
@@ -47,7 +47,7 @@ const ProductCard = ({ product }) => {
         {/* View Details Button */}
         <Link
           to={`/product/${product._id}`}
-          className="block w-full bg-blue-600 hover:bg-blue-700 text-white text-center py-2.5 rounded-lg font-semibold transition-colors duration-200"
+          className="block w-full bg-orange-500 hover:bg-orange-600 text-white text-center py-2.5 rounded-lg font-semibold transition-colors duration-200"
         >
           View Details
         </Link>

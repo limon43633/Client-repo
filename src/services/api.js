@@ -1,17 +1,23 @@
 import axios from 'axios';
 
 const API = axios.create({
-  baseURL: import.meta.env.VITE_API_URL,
+  baseURL: import.meta.env.VITE_API_URL || 'http://localhost:5000',
 });
 
+// Add request interceptor for debugging
+API.interceptors.request.use(
+  (config) => {
+    console.log('API Request:', config.baseURL + config.url);
+    return config;
+  },
+  (error) => {
+    return Promise.reject(error);
+  }
+);
+
 export const productAPI = {
-  // Get home page products
   getHomeProducts: (sort = 'latest') => API.get(`/api/products/home?sort=${sort}`),
-  
-  // Get all products
   getAllProducts: () => API.get('/api/products'),
-  
-  // Get single product by ID
   getProductById: (id) => API.get(`/api/products/${id}`),
 };
 
