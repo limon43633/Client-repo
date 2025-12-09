@@ -3,40 +3,23 @@ import Navbar from "./components/Navbar";
 import { Routes, Route } from "react-router-dom";
 import Home from "./pages/Home";
 import Footer from "./components/Footer";
-
+import { ProductProvider } from "./contexts/ProductContext";
 
 function App() {
-
-
   return (
-    <div>
-     
-     <Navbar />
+    <ProductProvider>
+      <div>
+        <Navbar />
 
+        <Routes>
+          {/* public routes */}
+          <Route path="/" element={<Home />} />
+        </Routes>
 
-
-     <Routes>
-
-    {/* public routes */}
-
-    <Route path="/" element={<Home />} />
-
-
-
-
-
-
-
-
-     </Routes>
-
-
-     <Footer />
-
-
-     
-    </div>
-  )
+        <Footer />
+      </div>
+    </ProductProvider>
+  );
 }
 
-export default App
+export default App;
