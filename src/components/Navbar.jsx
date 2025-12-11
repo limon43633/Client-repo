@@ -79,7 +79,7 @@ const Navbar = () => {
                 {isDark ? <Sun className="w-5 h-5" /> : <Moon className="w-5 h-5" />}
               </button>
 
-              <button
+              <Link to="/login"
                 className={`px-5 py-2.5 rounded-xl font-medium transition-all duration-300 backdrop-blur-md ${
                   isDark
                     ? "text-gray-300 hover:bg-white/10 border border-white/10"
@@ -87,11 +87,11 @@ const Navbar = () => {
                 }`}
               >
                 Log in
-              </button>
+              </Link>
 
-              <button className="px-5 py-2.5 bg-gradient-to-r from-orange-500 to-orange-600 text-white rounded-xl font-medium shadow-lg hover:shadow-orange-500/25 hover:scale-105 transition-all duration-300">
+              <Link to="/register" className="px-5 py-2.5 bg-gradient-to-r from-orange-500 to-orange-600 text-white rounded-xl font-medium shadow-lg hover:shadow-orange-500/25 hover:scale-105 transition-all duration-300">
                 Register
-              </button>
+              </Link>
             </div>
 
             {/* Mobile Menu Button */}
