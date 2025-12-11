@@ -2,6 +2,7 @@ import React from 'react';
 import { motion } from "framer-motion";
 import { ArrowRight, Package, TrendingUp, Shield, CheckCircle } from 'lucide-react';
 import { useTheme } from '../contexts/ThemeContext';
+import { Link } from 'react-router-dom';
 
 function Banner() {
   const { isDark } = useTheme();
@@ -98,9 +99,12 @@ function Banner() {
                                <span>Get Started Free</span>
                 <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
               </motion.button>
-              <motion.button whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }} className={`inline-flex items-center justify-center px-8 py-4 rounded-lg shadow-md hover:shadow-lg transition-shadow border-2 ${isDark ? 'bg-gray-800 text-orange-400 border-gray-700' : 'bg-white text-orange-500 border-orange-100'}`}>
+
+              
+
+              <Link to="/all-products" whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }} className={`inline-flex items-center justify-center px-8 py-4 rounded-lg shadow-md hover:shadow-lg transition-shadow border-2 ${isDark ? 'bg-gray-800 text-orange-400 border-gray-700' : 'bg-white text-orange-500 border-orange-100'}`}>
                 View All Products
-              </motion.button>
+              </Link>
             </motion.div>
 
             <motion.div variants={itemVariants} className={`grid grid-cols-3 gap-6 mt-12 pt-8 border-t ${isDark ? 'border-t border-orange-500' : 'border-gray-200'}`}>

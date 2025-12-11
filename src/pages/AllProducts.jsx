@@ -1,4 +1,4 @@
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { useProducts } from '../contexts/ProductContext';
 import { useTheme } from '../contexts/ThemeContext';
 import ProductCard from '../components/ProductCard';
@@ -7,9 +7,31 @@ const AllProducts = () => {
   const { allProducts, loading, error, fetchAllProducts } = useProducts();
   const { isDark } = useTheme();
 
+  const [sortedProducts, setSortedProducts] = useState([]);
+  const [sortOption, setSortOption] = useState("latest");
+
   useEffect(() => {
     fetchAllProducts();
   }, []);
+
+  useEffect(() => {
+    if (allProducts.length > 0) {
+      let sorted = [...allProducts];
+
+      if (sortOption === "low-to-high") {
+        sorted.sort((a, b) => a.price - b.price);
+      } 
+      else if (sortOption === "high-to-low") {
+        sorted.sort((a, b) => b.price - a.price);
+      } 
+      else {
+        // Latest (default)
+        sorted = [...allProducts];
+      }
+
+      setSortedProducts(sorted);
+    }
+  }, [allProducts, sortOption]);
 
   if (loading) {
     return (
@@ -36,11 +58,11 @@ const AllProducts = () => {
   }
 
   return (
-    <div className={`min-h-screen py-16 ${isDark ? 'bg-gray-900' : 'bg-gray-50'}`}>
-      {/* Container */}
-      <div className="max-w-[1280px] mx-auto px-4 sm:px-6 lg:px-8">
-        
-        {/* Page Header */}
+    <div className={`min-h-screen pt-28 pb-16 ${isDark ? 'bg-gray-900' : 'bg-gray-50'}`}>
+      
+      <div className="max-w-[1280px] mx-auto px-4 py-16 sm:px-6 lg:px-8">
+
+        {/* HEADER */}
         <div className="text-center mb-12">
           <h1 className={`text-3xl sm:text-4xl lg:text-5xl font-bold mb-4 ${isDark ? 'text-white' : 'text-gray-800'}`}>
             All <span className="text-orange-500">Products</span>
@@ -50,17 +72,32 @@ const AllProducts = () => {
           </p>
         </div>
 
-        {/* Products Count */}
-        <div className="flex justify-between items-center mb-8">
+        {/* TOP BAR - COUNT + SORT */}
+        <div className="flex flex-col sm:flex-row justify-between sm:items-center gap-4 mb-8">
+
+          {/* COUNT */}
           <p className={`text-sm sm:text-base font-semibold ${isDark ? 'text-gray-300' : 'text-gray-700'}`}>
-            Showing <span className="text-orange-500">{allProducts.length}</span> products
+            Showing <span className="text-orange-500">{sortedProducts.length}</span> products
           </p>
+
+          {/* SORT DROPDOWN */}
+          <select
+            value={sortOption}
+            onChange={(e) => setSortOption(e.target.value)}
+            className={`px-4 py-2 border rounded-lg text-sm sm:text-base cursor-pointer outline-none
+              ${isDark ? 'bg-gray-800 text-gray-200 border-gray-700' : 'bg-white text-gray-700 border-gray-300'}`}
+          >
+            <option value="latest">✓ Latest</option>
+            <option value="low-to-high">Price: Low to High</option>
+            <option value="high-to-low">Price: High to Low</option>
+          </select>
+
         </div>
 
-        {/* Products Grid */}
-        {allProducts.length > 0 ? (
+        {/* GRID */}
+        {sortedProducts.length > 0 ? (
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 sm:gap-8">
-            {allProducts.map((product) => (
+            {sortedProducts.map((product) => (
               <ProductCard key={product._id} product={product} />
             ))}
           </div>
@@ -72,10 +109,7 @@ const AllProducts = () => {
               viewBox="0 0 24 24"
               stroke="currentColor"
             >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth={2}
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2}
                 d="M20 13V6a2 2 0 00-2-2H6a2 2 0 00-2 2v7m16 0v5a2 2 0 01-2 2H6a2 2 0 01-2-2v-5m16 0h-2.586a1 1 0 00-.707.293l-2.414 2.414a1 1 0 01-.707.293h-3.172a1 1 0 01-.707-.293l-2.414-2.414A1 1 0 006.586 13H4"
               />
             </svg>
@@ -87,6 +121,7 @@ const AllProducts = () => {
             </p>
           </div>
         )}
+
       </div>
     </div>
   );
