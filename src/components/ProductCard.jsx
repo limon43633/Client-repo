@@ -1,8 +1,13 @@
 import { Link } from 'react-router-dom';
+import { useTheme } from '../contexts/ThemeContext';
 
 const ProductCard = ({ product }) => {
+  const { isDark } = useTheme();
+
   return (
-    <div className="bg-white rounded-lg shadow-md overflow-hidden hover:shadow-xl transition-shadow duration-300">
+    <div className={`rounded-lg shadow-md overflow-hidden hover:shadow-xl transition-shadow duration-300 ${
+      isDark ? 'bg-gray-800' : 'bg-white'
+    }`}>
       {/* Product Image */}
       <div className="relative h-64 overflow-hidden group">
         <img
@@ -19,11 +24,11 @@ const ProductCard = ({ product }) => {
 
       {/* Product Info */}
       <div className="p-5">
-        <h3 className="text-xl font-bold text-gray-800 mb-2 line-clamp-1">
+        <h3 className={`text-xl font-bold mb-2 line-clamp-1 ${isDark ? 'text-white' : 'text-gray-800'}`}>
           {product.name}
         </h3>
         
-        <p className="text-gray-600 text-sm mb-4 line-clamp-2">
+        <p className={`text-sm mb-4 line-clamp-2 ${isDark ? 'text-gray-300' : 'text-gray-600'}`}>
           {product.description}
         </p>
 
@@ -32,13 +37,13 @@ const ProductCard = ({ product }) => {
             <p className="text-2xl font-bold text-orange-500">
               ৳{product.price}
             </p>
-            <p className="text-xs text-gray-500">
+            <p className={`text-xs ${isDark ? 'text-gray-400' : 'text-gray-500'}`}>
               Min Order: {product.minimumOrderQuantity} pcs
             </p>
           </div>
           
           <div className="text-right">
-            <p className="text-sm text-gray-600">
+            <p className={`text-sm ${isDark ? 'text-gray-300' : 'text-gray-600'}`}>
               Available: <span className="font-semibold text-green-600">{product.availableQuantity}</span>
             </p>
           </div>
