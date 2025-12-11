@@ -5,6 +5,8 @@ import Home from "./pages/Home";
 import Footer from "./components/Footer";
 import { ProductProvider } from "./contexts/ProductContext";
 import AllProducts from "./pages/AllProducts";
+import Login from "./pages/Login";
+import Register from "./pages/Register";
 
 function App() {
   return (
@@ -16,6 +18,8 @@ function App() {
           {/* public routes */}
           <Route path="/" element={<Home />} />
           <Route path="/all-products" element={<AllProducts />} />
+          <Route path="/login" element={<Login />} />
+          <Route path="/register" element={<Register />} />
         </Routes>
 
         <Footer />
