@@ -7,6 +7,7 @@ import { ProductProvider } from "./contexts/ProductContext";
 import AllProducts from "./pages/AllProducts";
 import Login from "./pages/Login";
 import Register from "./pages/Register";
+import ProductDetails from "./pages/ProductDetails";
 
 function App() {
   return (
@@ -20,6 +21,7 @@ function App() {
           <Route path="/all-products" element={<AllProducts />} />
           <Route path="/login" element={<Login />} />
           <Route path="/register" element={<Register />} />
+          <Route path="/product/:id" element={<ProductDetails />} />
         </Routes>
 
         <Footer />
