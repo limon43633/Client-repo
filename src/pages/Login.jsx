@@ -1,14 +1,25 @@
 import { useState } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate, useLocation } from 'react-router-dom';
 import { useTheme } from '../contexts/ThemeContext';
+import { useAuth } from '../contexts/AuthContext';
+import { FaEye, FaEyeSlash } from 'react-icons/fa';
+import { FcGoogle } from 'react-icons/fc';
+import toast from 'react-hot-toast';
 
 const Login = () => {
   const { isDark } = useTheme();
+  const { loginWithEmail, loginWithGoogle } = useAuth();
+  const navigate = useNavigate();
+  const location = useLocation();
+  
+  const from = location.state?.from?.pathname || '/';
+  
   const [showPassword, setShowPassword] = useState(false);
   const [formData, setFormData] = useState({
     email: '',
     password: ''
   });
+  const [loading, setLoading] = useState(false);
 
   const handleChange = (e) => {
     setFormData({
@@ -17,13 +28,44 @@ const Login = () => {
     });
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    console.log('Login Data:', formData);
+    setLoading(true);
+
+    try {
+      await loginWithEmail(formData.email, formData.password);
+      toast.success('Login successful!');
+      navigate(from, { replace: true });
+    } catch (error) {
+      console.error('Login error:', error);
+      if (error.code === 'auth/user-not-found') {
+        toast.error('No account found with this email');
+      } else if (error.code === 'auth/wrong-password') {
+        toast.error('Incorrect password');
+      } else if (error.code === 'auth/invalid-email') {
+        toast.error('Invalid email address');
+      } else if (error.code === 'auth/invalid-credential') {
+        toast.error('Invalid email or password');
+      } else {
+        toast.error('Login failed. Please try again.');
+      }
+    } finally {
+      setLoading(false);
+    }
   };
 
-  const handleGoogleLogin = () => {
-    console.log('Google Login');
+  const handleGoogleLogin = async () => {
+    setLoading(true);
+    try {
+      await loginWithGoogle();
+      toast.success('Login successful with Google!');
+      navigate(from, { replace: true });
+    } catch (error) {
+      console.error('Google login error:', error);
+      toast.error('Google login failed. Please try again.');
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
@@ -31,6 +73,7 @@ const Login = () => {
       isDark ? 'bg-gray-900' : 'bg-gradient-to-br from-orange-50 to-orange-100'
     }`}>
       <div className="max-w-md w-full space-y-8">
+        {/* Header */}
         <div className="text-center">
           <h2 className={`text-3xl sm:text-4xl font-bold mb-2 ${
             isDark ? 'text-white' : 'text-gray-900'
@@ -44,11 +87,12 @@ const Login = () => {
           </p>
         </div>
 
+        {/* Login Card */}
         <div className={`rounded-2xl shadow-2xl p-8 sm:p-10 ${
           isDark ? 'bg-gray-800' : 'bg-white'
         }`}>
           <form onSubmit={handleSubmit} className="space-y-6">
-
+            {/* Email Input */}
             <div>
               <label 
                 htmlFor="email" 
@@ -65,15 +109,17 @@ const Login = () => {
                 required
                 value={formData.email}
                 onChange={handleChange}
+                disabled={loading}
                 className={`w-full px-4 py-3 rounded-lg border focus:outline-none focus:ring-2 focus:ring-orange-500 transition-all ${
                   isDark 
                     ? 'bg-gray-700 border-gray-600 text-white placeholder-gray-400' 
                     : 'bg-gray-50 border-gray-300 text-gray-900 placeholder-gray-500'
-                }`}
+                } ${loading ? 'opacity-50 cursor-not-allowed' : ''}`}
                 placeholder="Enter your email"
               />
             </div>
 
+            {/* Password Input */}
             <div>
               <label 
                 htmlFor="password" 
@@ -91,33 +137,38 @@ const Login = () => {
                   required
                   value={formData.password}
                   onChange={handleChange}
+                  disabled={loading}
                   className={`w-full px-4 py-3 rounded-lg border focus:outline-none focus:ring-2 focus:ring-orange-500 transition-all ${
                     isDark 
                       ? 'bg-gray-700 border-gray-600 text-white placeholder-gray-400' 
                       : 'bg-gray-50 border-gray-300 text-gray-900 placeholder-gray-500'
-                  }`}
+                  } ${loading ? 'opacity-50 cursor-not-allowed' : ''}`}
                   placeholder="Enter your password"
                 />
                 <button
                   type="button"
                   onClick={() => setShowPassword(!showPassword)}
+                  disabled={loading}
                   className={`absolute right-3 top-1/2 -translate-y-1/2 ${
                     isDark ? 'text-gray-400 hover:text-gray-300' : 'text-gray-500 hover:text-gray-700'
-                  }`}
+                  } ${loading ? 'opacity-50 cursor-not-allowed' : ''}`}
                 >
-                  {showPassword ? '🙈' : '👁️'}
+                  {showPassword ? <FaEyeSlash size={20} /> : <FaEye size={20} />}
                 </button>
               </div>
             </div>
 
+            {/* Submit Button */}
             <button
               type="submit"
-              className="w-full bg-orange-500 hover:bg-orange-600 text-white font-semibold py-3 rounded-lg transition-colors duration-200 shadow-lg hover:shadow-xl"
+              disabled={loading}
+              className="w-full bg-orange-500 hover:bg-orange-600 text-white font-semibold py-3 rounded-lg transition-colors duration-200 shadow-lg hover:shadow-xl disabled:opacity-50 disabled:cursor-not-allowed"
             >
-              Sign In
+              {loading ? 'Signing in...' : 'Sign In'}
             </button>
           </form>
 
+          {/* Divider */}
           <div className="relative my-6">
             <div className="absolute inset-0 flex items-center">
               <div className={`w-full border-t ${isDark ? 'border-gray-600' : 'border-gray-300'}`}></div>
@@ -129,27 +180,24 @@ const Login = () => {
             </div>
           </div>
 
-          {/* Google Only */}
-          <div className="grid grid-cols-1">
+          {/* Social Login Buttons */}
+          <div className="flex justify-center">
             <button
               type="button"
               onClick={handleGoogleLogin}
-              className={`flex items-center justify-center gap-2 py-3 rounded-lg border font-medium transition-all ${
+              disabled={loading}
+              className={`flex items-center justify-center w-full gap-2 py-3 px-8 rounded-lg border font-medium transition-all ${
                 isDark 
                   ? 'bg-gray-700 border-gray-600 text-gray-300 hover:bg-gray-600' 
                   : 'bg-white border-gray-300 text-gray-700 hover:bg-gray-50'
-              }`}
+              } ${loading ? 'opacity-50 cursor-not-allowed' : ''}`}
             >
-              <svg width="20" height="20" viewBox="0 0 256 262">
-                <path fill="#4285F4" d="M255.68 133.46c0-10.35-.93-20.32-2.67-30H130.5v56.74h70.22c-3.04 16.4-12.3 30.28-26.17 39.62v32.98h42.32c24.77-22.8 38.81-56.47 38.81-99.34"/>
-                <path fill="#34A853" d="M130.5 261.1c35.49 0 65.34-11.73 87.12-31.76l-42.32-32.98c-11.73 7.86-26.8 12.49-44.8 12.49-34.43 0-63.55-23.22-73.94-54.55H13.06v34.54C34.7 231.36 79.96 261.1 130.5 261.1"/>
-                <path fill="#FBBC05" d="M56.56 154.3a77.82 77.82 0 0 1-4.06-24.8c0-8.62 1.49-16.96 4.06-24.8V70.16H13.06A130.49 130.49 0 0 0 .5 129.5C.5 153.53 6.53 176 17.8 195.42l38.76-41.12"/>
-                <path fill="#EA4335" d="M130.5 50.52c19.3 0 36.66 6.64 50.32 19.71l37.7-37.7C195.84 10.09 165.99.5 130.5.5 79.96.5 34.7 30.24 13.06 70.16l39.44 34.54C66.95 73.74 96.07 50.52 130.5 50.52"/>
-              </svg>
-              <span className="hidden sm:inline">Google</span>
+              <FcGoogle size={24} />
+              <span>Google</span>
             </button>
           </div>
 
+          {/* Register Link */}
           <p className={`text-center text-sm mt-6 ${
             isDark ? 'text-gray-400' : 'text-gray-600'
           }`}>

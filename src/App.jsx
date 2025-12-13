@@ -8,11 +8,45 @@ import AllProducts from "./pages/AllProducts";
 import Login from "./pages/Login";
 import Register from "./pages/Register";
 import ProductDetails from "./pages/ProductDetails";
+import { AuthProvider } from "./contexts/AuthContext";
+import { Toaster } from "react-hot-toast";
 
 function App() {
   return (
-    <ProductProvider>
+
+
+<AuthProvider>
+
+<ProductProvider>
       <div>
+
+
+      <Toaster 
+              position="top-center"
+              toastOptions={{
+                duration: 3000,
+                style: {
+                  background: '#333',
+                  color: '#fff',
+                },
+                success: {
+                  duration: 3000,
+                  iconTheme: {
+                    primary: '#f97316',
+                    secondary: '#fff',
+                  },
+                },
+                error: {
+                  duration: 4000,
+                  iconTheme: {
+                    primary: '#ef4444',
+                    secondary: '#fff',
+                  },
+                },
+              }}
+            />
+
+
         <Navbar />
 
         <Routes>
@@ -27,6 +61,9 @@ function App() {
         <Footer />
       </div>
     </ProductProvider>
+
+</AuthProvider>
+    
   );
 }
 
