@@ -11,6 +11,7 @@ import ProductDetails from "./pages/ProductDetails";
 import { AuthProvider } from "./contexts/AuthContext";
 import { Toaster } from "react-hot-toast";
 import PrivateRoute from "./components/PrivateRoute";
+import BookingPage from "./pages/BookingPage";
 
 function App() {
   return (
@@ -68,10 +69,25 @@ function App() {
           element={
             <PrivateRoute>
               <ProductDetails />
+              
             </PrivateRoute>
           }
           
           />
+
+          <Route
+          
+          path="/booking/:id"
+          element={
+            <PrivateRoute>
+              <BookingPage />
+            </PrivateRoute>
+          }
+          
+          />
+
+
+
         </Routes>
 
         <Footer />
