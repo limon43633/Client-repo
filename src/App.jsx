@@ -10,6 +10,7 @@ import Register from "./pages/Register";
 import ProductDetails from "./pages/ProductDetails";
 import { AuthProvider } from "./contexts/AuthContext";
 import { Toaster } from "react-hot-toast";
+import PrivateRoute from "./components/PrivateRoute";
 
 function App() {
   return (
@@ -55,7 +56,22 @@ function App() {
           <Route path="/all-products" element={<AllProducts />} />
           <Route path="/login" element={<Login />} />
           <Route path="/register" element={<Register />} />
-          <Route path="/product/:id" element={<ProductDetails />} />
+          
+
+
+
+          {/* private routes */}
+
+          <Route
+          
+          path="/product/:id"
+          element={
+            <PrivateRoute>
+              <ProductDetails />
+            </PrivateRoute>
+          }
+          
+          />
         </Routes>
 
         <Footer />

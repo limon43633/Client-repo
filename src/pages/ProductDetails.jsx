@@ -1,13 +1,16 @@
 import { useEffect, useState } from 'react';
 import { useParams, useNavigate, Link } from 'react-router-dom';
 import { useTheme } from '../contexts/ThemeContext';
+import { useAuth } from '../contexts/AuthContext';
 import { productAPI } from '../services/api';
-import { FaShoppingCart, FaBox, FaShippingFast, FaTags, FaArrowLeft } from 'react-icons/fa';
+import { FaShoppingCart, FaBox, FaShippingFast, FaTags, FaArrowLeft, FaLock } from 'react-icons/fa';
+import toast from 'react-hot-toast';
 
 const ProductDetails = () => {
   const { id } = useParams();
   const navigate = useNavigate();
   const { isDark } = useTheme();
+  const { user } = useAuth();
 
   const [product, setProduct] = useState(null);
   const [loading, setLoading] = useState(true);
@@ -56,6 +59,39 @@ const ProductDetails = () => {
 
   const calculateTotal = () => {
     return (product.price * quantity).toFixed(2);
+  };
+
+  // Check if user can order (not admin or manager)
+  const canOrder = user && user.role !== 'admin' && user.role !== 'manager';
+  
+  // Check if user account is suspended
+  const isSuspended = user && user.status === 'suspended';
+
+  const handleOrderClick = () => {
+    if (!user) {
+      toast.error('Please login to place an order');
+      navigate('/login', { state: { from: { pathname: `/product/${id}` } } });
+      return;
+    }
+
+    if (isSuspended) {
+      toast.error('Your account is suspended. You cannot place orders.');
+      return;
+    }
+
+    if (!canOrder) {
+      toast.error('Only buyers can place orders');
+      return;
+    }
+
+    // Redirect to booking page with product and quantity info
+    navigate(`/booking/${id}`, { 
+      state: { 
+        product, 
+        quantity,
+        totalPrice: calculateTotal()
+      } 
+    });
   };
 
   if (loading) {
@@ -289,18 +325,35 @@ const ProductDetails = () => {
             </div>
 
             {/* Order Button */}
-            <button
-              onClick={() => alert('Login required! (Will implement authentication next)')}
-              className="w-full bg-orange-500 hover:bg-orange-600 text-white font-bold py-4 rounded-xl transition-colors shadow-lg hover:shadow-xl flex items-center justify-center gap-3 text-lg"
-            >
-              <FaShoppingCart />
-              <span>Order Now</span>
-            </button>
+            {isSuspended ? (
+              <div className={`p-4 rounded-xl border-2 border-red-500 ${isDark ? 'bg-red-500/10' : 'bg-red-50'}`}>
+                <p className="text-red-500 text-center font-semibold">
+                  ⚠️ Your account is suspended. You cannot place orders.
+                </p>
+              </div>
+            ) : !canOrder && user ? (
+              <div className={`p-4 rounded-xl border-2 border-yellow-500 ${isDark ? 'bg-yellow-500/10' : 'bg-yellow-50'}`}>
+                <p className="text-yellow-600 text-center font-semibold">
+                  ⚠️ Only buyers can place orders
+                </p>
+              </div>
+            ) : (
+              <button
+                onClick={handleOrderClick}
+                className="w-full bg-orange-500 hover:bg-orange-600 text-white font-bold py-4 rounded-xl transition-colors shadow-lg hover:shadow-xl flex items-center justify-center gap-3 text-lg"
+              >
+                <FaShoppingCart />
+                <span>Order Now</span>
+              </button>
+            )}
 
             {/* Info Note */}
-            <p className={`text-sm text-center ${isDark ? 'text-gray-400' : 'text-gray-600'}`}>
-              🔒 Please login to place an order
-            </p>
+            {!user && (
+              <p className={`text-sm text-center ${isDark ? 'text-gray-400' : 'text-gray-600'}`}>
+                <FaLock className="inline mr-1" />
+                Please login to place an order
+              </p>
+            )}
 
             {/* Created By Info */}
             {product.createdBy && (
