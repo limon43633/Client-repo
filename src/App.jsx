@@ -13,17 +13,25 @@ import { Toaster } from "react-hot-toast";
 import PrivateRoute from "./components/PrivateRoute";
 import BookingPage from "./pages/BookingPage";
 import DashboardLayout from "./layouts/DashboardLayout";
-import DashboardHome from "./pages/dashboards/DashboardHome";
-import MyOrders from "./pages/dashboards/MyOrders";
-import Profile from "./pages/dashboards/Profile";
+
+
+
+
+
+// Dashboard Pages
+import MyOrder from "./pages/dashboards/buyer/MyOrder";
 import TrackOrder from "./pages/dashboards/TrackOrder";
-import AddProduct from "./pages/dashboards/AddProduct";
-import ManageProducts from "./pages/dashboards/ManageProducts";
-import PendingOrders from "./pages/dashboards/PendingOrders";
-import ApprovedOrders from "./pages/dashboards/ApprovedOrders";
-import ManageUsers from "./pages/dashboards/ManageUsers";
-import AdminAllProducts from "./pages/dashboards/AdminAllProducts";
-import AdminAllOrders from "./pages/dashboards/AdminAllOrders";
+import ManageUsers from "./pages/dashboards/admin/ManageUsers";
+import AdminAllProducts from "./pages/dashboards/admin/AdminAllProducts";
+import AdminAllOrders from "./pages/dashboards/admin/AdminAllOrders";
+import AddProduct from "./pages/dashboards/manager/AddProduct";
+import ManageProducts from "./pages/dashboards/manager/ManageProducts";
+import PendingOrders from "./pages/dashboards/manager/PendingOrders";
+import ApprovedOrders from "./pages/dashboards/manager/ApprovedOrders";
+import DashboardHome from "./pages/dashboards/DashboardHome";
+import Profile from "./pages/dashboards/Profile";
+
+
 
 function App() {
   const location = useLocation();
@@ -81,6 +89,8 @@ function App() {
               </PrivateRoute>
             } />
 
+            
+
             {/* Dashboard routes - Nested */}
             <Route path="/dashboard" element={
               <PrivateRoute>
@@ -90,10 +100,11 @@ function App() {
               <Route index element={<DashboardHome />} />
               {/* Common routes */}
               <Route path="profile" element={<Profile />} />
+              <Route path="track-order" element={<TrackOrder />} />
               
               {/* Buyer routes */}
-              <Route path="my-orders" element={<MyOrders />} />
-              <Route path="track-order" element={<TrackOrder />} />
+              <Route path="my-orders" element={<MyOrder />} />
+              
               
               {/* Manager routes */}
               <Route path="add-product" element={<AddProduct />} />
@@ -106,6 +117,9 @@ function App() {
               <Route path="all-products" element={<AdminAllProducts />} />
               <Route path="all-orders" element={<AdminAllOrders />} />
             </Route>
+
+
+
           </Routes>
 
           {/* Show Footer only on NON-Dashboard pages */}

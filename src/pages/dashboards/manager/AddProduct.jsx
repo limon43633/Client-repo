@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { useTheme } from '../../contexts/ThemeContext';
+import { useTheme } from "./../../../contexts/ThemeContext";
 import { FaPlus, FaImage, FaYoutube, FaTag } from 'react-icons/fa';
 
 const AddProduct = () => {

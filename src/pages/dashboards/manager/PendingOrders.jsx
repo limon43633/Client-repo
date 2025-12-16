@@ -1,26 +1,25 @@
-import { useTheme } from '../../contexts/ThemeContext';
-
-const AdminAllProducts = () => {
+import { useTheme } from "./../../../contexts/ThemeContext";
+const PendingOrders = () => {
   const { isDark } = useTheme();
   
   return (
     <div>
       <h1 className={`text-3xl font-bold mb-6 ${isDark ? 'text-white' : 'text-gray-900'}`}>
-        All Products (Admin)
+        Pending Orders
       </h1>
       <div className={`p-8 rounded-2xl text-center ${
         isDark ? 'bg-gray-800/50' : 'bg-gray-50'
       }`}>
-        <div className="text-6xl mb-4">📦</div>
+        <div className="text-6xl mb-4">⏳</div>
         <h3 className={`text-xl font-semibold mb-2 ${isDark ? 'text-white' : 'text-gray-900'}`}>
-          Admin Products Page
+          Pending Orders Page
         </h3>
         <p className={isDark ? 'text-gray-400' : 'text-gray-600'}>
-          Admin feature - Coming soon!
+          Manager feature - Coming soon!
         </p>
       </div>
     </div>
   );
 };
 
-export default AdminAllProducts;
+export default PendingOrders;
