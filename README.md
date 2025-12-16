@@ -5,7 +5,7 @@ A full-stack MERN application designed to help small and medium-scale garment fa
 ---
 
 ## 🚀 Live Website
-🔗 **Live URL:**  
+🔗 **Live URL:**  https://client-repo.onrender.com
 
 ---
 
