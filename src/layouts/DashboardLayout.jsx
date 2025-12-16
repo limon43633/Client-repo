@@ -1,3 +1,4 @@
+// client/src/layouts/DashboardLayout.jsx - UPDATED
 import { Navigate, Outlet, Link, useLocation, useNavigate } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
 import { useTheme } from '../contexts/ThemeContext';
@@ -63,10 +64,18 @@ const DashboardLayout = () => {
 
   if (!user) return <Navigate to="/login" replace />;
 
-  const getMenuItems = () => {
-    const base = [{ path: '/dashboard', icon: FaTachometerAlt, label: 'Dashboard', exact: true }];
+  // Get user role - important fix here
+  const userRole = user?.role || 'buyer';
 
-    if (user.role === 'admin') {
+  const getMenuItems = () => {
+    const base = [{ 
+      path: '/dashboard', 
+      icon: FaTachometerAlt, 
+      label: 'Dashboard', 
+      exact: true 
+    }];
+
+    if (userRole === 'admin') {
       return [
         ...base,
         { path: '/dashboard/manage-users', icon: FaUsers, label: 'Manage Users' },
@@ -76,7 +85,7 @@ const DashboardLayout = () => {
       ];
     }
 
-    if (user.role === 'manager') {
+    if (userRole === 'manager') {
       return [
         ...base,
         { path: '/dashboard/add-product', icon: FaPlus, label: 'Add Product' },
@@ -87,6 +96,7 @@ const DashboardLayout = () => {
       ];
     }
 
+    // Default: buyer
     return [
       ...base,
       { path: '/dashboard/my-orders', icon: FaShoppingCart, label: 'My Orders' },
@@ -155,14 +165,24 @@ const DashboardLayout = () => {
                   src={
                     user.photoURL ||
                     `https://ui-avatars.com/api/?name=${encodeURIComponent(
-                      user.displayName || 'User'
+                      user.name || user.displayName || 'User'
                     )}&background=f97316&color=fff`
                   }
                   className="w-12 h-12 rounded-full border-2 border-orange-500"
+                  alt="Profile"
                 />
                 <div>
-                  <p className="font-semibold truncate">{user.displayName}</p>
+                  <p className="font-semibold truncate">{user.name || user.displayName}</p>
                   <p className="text-xs text-gray-400 truncate">{user.email}</p>
+                  <p className={`text-xs px-2 py-1 mt-1 rounded-full inline-block ${
+                    userRole === 'admin' 
+                      ? 'bg-purple-500/20 text-purple-400' 
+                      : userRole === 'manager'
+                      ? 'bg-blue-500/20 text-blue-400'
+                      : 'bg-green-500/20 text-green-400'
+                  }`}>
+                    {userRole.toUpperCase()}
+                  </p>
                 </div>
               </div>
             </div>

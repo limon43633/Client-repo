@@ -1,16 +1,114 @@
-# React + Vite
+# 🧵 Garments Order & Production Tracker System
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+A full-stack MERN application designed to help small and medium-scale garment factories efficiently manage orders, production stages, inventory, and delivery tracking in one centralized platform.
 
-Currently, two official plugins are available:
+---
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) (or [oxc](https://oxc.rs) when used in [rolldown-vite](https://vite.dev/guide/rolldown)) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+## 🚀 Live Website
+🔗 **Live URL:**  
 
-## React Compiler
+---
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+## 🎯 Project Purpose
+The goal of this system is to digitalize and simplify garment order and production workflows by providing:
+- Real-time order tracking
+- Role-based dashboards (Admin, Manager, Buyer)
+- Production stage monitoring
+- Secure authentication & authorization
+- Clean, modern UI suitable for real business use
 
-## Expanding the ESLint configuration
+This project is built as part of **Assignment–11** to demonstrate full-stack development skills using **MERN Stack**.
 
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+---
+
+## 🧩 Key Features
+
+### 🔐 Authentication & Authorization
+- Email & Password authentication using Firebase
+- Google / GitHub OAuth login
+- JWT token stored in cookies
+- Role-based access control (Admin, Manager, Buyer)
+- Protected private routes
+- Reload-safe authentication (no redirect on refresh)
+
+---
+
+### 🏠 Public Features
+- Modern landing page with Framer Motion animations
+- Product listing from MongoDB
+- Product details page
+- Responsive UI for all devices
+- Dark / Light theme toggle
+- 404 Not Found page
+
+---
+
+### 🛒 Buyer Dashboard
+- Place garment orders
+- View order history
+- Track production status with timeline
+- Cancel pending orders
+- View suspend feedback (if suspended)
+
+---
+
+### 🏭 Manager Dashboard
+- Add new products
+- Manage own products
+- View & approve/reject pending orders
+- Update production tracking stages
+- View profile and suspend feedback
+
+---
+
+### 🧑‍💼 Admin Dashboard
+- Manage users (approve / suspend with reason)
+- Manage all products
+- Control homepage product visibility
+- View all orders with filter & search
+- Analytics dashboard (optional)
+- Role management
+
+---
+
+### 📦 Order Tracking
+- Step-by-step production timeline
+- Status updates:
+  - Cutting Completed
+  - Sewing Started
+  - Finishing
+  - QC Checked
+  - Packed
+  - Shipped / Out for Delivery
+
+---
+
+## 🧪 Technologies Used
+
+### 🖥 Client Side (Frontend)
+- React.js
+- React Router DOM
+- Tailwind CSS
+- Framer Motion
+- Axios
+- Firebase Authentication
+- React Hook Form
+- SweetAlert2 / React Hot Toast
+- JWT (via cookies)
+- Context API
+
+### 🛠 Server Side (Backend)
+- Node.js
+- Express.js
+- MongoDB
+- Mongoose
+- JSON Web Token (JWT)
+- Cookie Parser
+- CORS
+- Dotenv
+
+---
+
+## 📦 NPM Packages Used
+
+### Client

@@ -1,6 +1,7 @@
+// client/src/App.jsx - UPDATED Role Protection
 import React from "react";
 import Navbar from "./components/Navbar";
-import { Routes, Route, useLocation } from "react-router-dom";
+import { Routes, Route, useLocation, Navigate } from "react-router-dom";
 import Home from "./pages/Home";
 import Footer from "./components/Footer";
 import { ProductProvider } from "./contexts/ProductContext";
@@ -13,10 +14,6 @@ import { Toaster } from "react-hot-toast";
 import PrivateRoute from "./components/PrivateRoute";
 import BookingPage from "./pages/BookingPage";
 import DashboardLayout from "./layouts/DashboardLayout";
-
-
-
-
 
 // Dashboard Pages
 import MyOrder from "./pages/dashboards/buyer/MyOrder";
@@ -31,7 +28,36 @@ import ApprovedOrders from "./pages/dashboards/manager/ApprovedOrders";
 import DashboardHome from "./pages/dashboards/DashboardHome";
 import Profile from "./pages/dashboards/Profile";
 
-
+// Role-based Route Protection Component
+const RoleProtectedRoute = ({ children, allowedRoles = [] }) => {
+  const { user } = useAuth();
+  
+  if (!user) {
+    return <Navigate to="/login" replace />;
+  }
+  
+  const userRole = user?.role || 'buyer';
+  
+  if (allowedRoles.length > 0 && !allowedRoles.includes(userRole)) {
+    // Redirect to appropriate dashboard based on role
+    let redirectPath = '/dashboard';
+    
+    switch(userRole) {
+      case 'admin':
+        redirectPath = '/dashboard/all-products';
+        break;
+      case 'manager':
+        redirectPath = '/dashboard/manage-products';
+        break;
+      default: // buyer
+        redirectPath = '/dashboard/my-orders';
+    }
+    
+    return <Navigate to={redirectPath} replace />;
+  }
+  
+  return children;
+};
 
 function App() {
   const location = useLocation();
@@ -89,37 +115,69 @@ function App() {
               </PrivateRoute>
             } />
 
-            
-
-            {/* Dashboard routes - Nested */}
+            {/* Dashboard routes - Nested with Role Protection */}
             <Route path="/dashboard" element={
               <PrivateRoute>
                 <DashboardLayout />
               </PrivateRoute>
             }>
               <Route index element={<DashboardHome />} />
-              {/* Common routes */}
+              
+              {/* Common routes - All roles can access */}
               <Route path="profile" element={<Profile />} />
               <Route path="track-order" element={<TrackOrder />} />
               
               {/* Buyer routes */}
-              <Route path="my-orders" element={<MyOrder />} />
+              <Route path="my-orders" element={
+                <RoleProtectedRoute allowedRoles={['buyer', 'manager', 'admin']}>
+                  <MyOrder />
+                </RoleProtectedRoute>
+              } />
               
+              {/* Manager routes - Manager and Admin can access */}
+              <Route path="add-product" element={
+                <RoleProtectedRoute allowedRoles={['manager', 'admin']}>
+                  <AddProduct />
+                </RoleProtectedRoute>
+              } />
               
-              {/* Manager routes */}
-              <Route path="add-product" element={<AddProduct />} />
-              <Route path="manage-products" element={<ManageProducts />} />
-              <Route path="pending-orders" element={<PendingOrders />} />
-              <Route path="approved-orders" element={<ApprovedOrders />} />
+              <Route path="manage-products" element={
+                <RoleProtectedRoute allowedRoles={['manager', 'admin']}>
+                  <ManageProducts />
+                </RoleProtectedRoute>
+              } />
               
-              {/* Admin routes */}
-              <Route path="manage-users" element={<ManageUsers />} />
-              <Route path="all-products" element={<AdminAllProducts />} />
-              <Route path="all-orders" element={<AdminAllOrders />} />
+              <Route path="pending-orders" element={
+                <RoleProtectedRoute allowedRoles={['manager', 'admin']}>
+                  <PendingOrders />
+                </RoleProtectedRoute>
+              } />
+              
+              <Route path="approved-orders" element={
+                <RoleProtectedRoute allowedRoles={['manager', 'admin']}>
+                  <ApprovedOrders />
+                </RoleProtectedRoute>
+              } />
+              
+              {/* Admin routes - Only Admin can access */}
+              <Route path="manage-users" element={
+                <RoleProtectedRoute allowedRoles={['admin']}>
+                  <ManageUsers />
+                </RoleProtectedRoute>
+              } />
+              
+              <Route path="all-products" element={
+                <RoleProtectedRoute allowedRoles={['admin']}>
+                  <AdminAllProducts />
+                </RoleProtectedRoute>
+              } />
+              
+              <Route path="all-orders" element={
+                <RoleProtectedRoute allowedRoles={['admin']}>
+                  <AdminAllOrders />
+                </RoleProtectedRoute>
+              } />
             </Route>
-
-
-
           </Routes>
 
           {/* Show Footer only on NON-Dashboard pages */}

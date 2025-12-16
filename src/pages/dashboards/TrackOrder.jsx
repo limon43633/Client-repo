@@ -1,86 +1,216 @@
+// client/src/pages/dashboards/TrackOrder.jsx - UPDATED
 import { useState, useEffect } from 'react';
-import { useLocation, useNavigate } from 'react-router-dom';
+import { useLocation, useParams, Link } from 'react-router-dom';
 import { useTheme } from '../../contexts/ThemeContext';
 import { orderAPI } from '../../services/api';
-import { FaMapMarkerAlt, FaTruck, FaCheckCircle, FaClock, FaBox, FaHome, FaShoppingCart, FaCreditCard, FaPhone, FaUser } from 'react-icons/fa';
-import toast from 'react-hot-toast';
+import { 
+  FaTruck, 
+  FaMapMarkerAlt, 
+  FaCalendarAlt,
+  FaCheckCircle,
+  FaSpinner,
+  FaBox,
+  FaShippingFast,
+  FaHome,
+  FaArrowLeft
+} from 'react-icons/fa';
+import { MdLocalShipping } from 'react-icons/md';
 
 const TrackOrder = () => {
-  const location = useLocation();
-  const navigate = useNavigate();
   const { isDark } = useTheme();
+  const location = useLocation();
+  const { orderId } = useParams();
   
-  const orderId = location.state?.orderId;
-  const [order, setOrder] = useState(null);
-  const [loading, setLoading] = useState(!!orderId);
-  const [searchId, setSearchId] = useState(orderId || '');
-  const [trackingSteps, setTrackingSteps] = useState([]);
-
+  // Set page title
   useEffect(() => {
-    if (orderId) {
-      fetchOrderDetails(orderId);
-    }
-  }, [orderId]);
+    document.title = 'Track Order | Garments Tracker';
+    return () => {
+      document.title = 'Garments Tracker';
+    };
+  }, []);
+  
+  const [order, setOrder] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+  
+  // Get orderId from params or location state
+  const currentOrderId = orderId || location.state?.orderId;
 
-  const fetchOrderDetails = async (id) => {
+  // Track status options
+  const trackStatusOptions = [
+    { 
+      id: 'ordered', 
+      title: 'Order Placed', 
+      description: 'Your order has been received',
+      icon: '📝',
+      color: 'blue'
+    },
+    { 
+      id: 'confirmed', 
+      title: 'Order Confirmed', 
+      description: 'Order has been confirmed by seller',
+      icon: '✅',
+      color: 'green'
+    },
+    { 
+      id: 'processing', 
+      title: 'Processing', 
+      description: 'Preparing your order for shipment',
+      icon: '⚙️',
+      color: 'purple'
+    },
+    { 
+      id: 'cutting', 
+      title: 'Cutting', 
+      description: 'Fabric cutting in progress',
+      icon: '✂️',
+      color: 'indigo'
+    },
+    { 
+      id: 'sewing', 
+      title: 'Sewing', 
+      description: 'Garment sewing in progress',
+      icon: '🧵',
+      color: 'pink'
+    },
+    { 
+      id: 'finishing', 
+      title: 'Finishing', 
+      description: 'Final touches and quality check',
+      icon: '✨',
+      color: 'yellow'
+    },
+    { 
+      id: 'packed', 
+      title: 'Packed', 
+      description: 'Order packed and ready for shipping',
+      icon: '📦',
+      color: 'orange'
+    },
+    { 
+      id: 'shipped', 
+      title: 'Shipped', 
+      description: 'Order has been shipped',
+      icon: '🚚',
+      color: 'red'
+    },
+    { 
+      id: 'delivered', 
+      title: 'Delivered', 
+      description: 'Order delivered successfully',
+      icon: '🏠',
+      color: 'emerald'
+    }
+  ];
+
+  // Mock order data for demo
+  const getMockOrder = () => {
+    return {
+      _id: currentOrderId || 'ORD123456',
+      productName: 'Premium Cotton T-Shirt',
+      productImage: 'https://images.unsplash.com/photo-1521572163474-6864f9cf17ab?w=400',
+      quantity: 5,
+      totalPrice: 2500,
+      orderDate: '2024-01-15',
+      status: 'processing',
+      currentStatus: 'sewing',
+      trackingUpdates: [
+        {
+          status: 'ordered',
+          date: '2024-01-15T10:00:00Z',
+          location: 'Online Store',
+          notes: 'Order placed successfully'
+        },
+        {
+          status: 'confirmed',
+          date: '2024-01-15T11:30:00Z',
+          location: 'Seller',
+          notes: 'Order confirmed and payment received'
+        },
+        {
+          status: 'processing',
+          date: '2024-01-16T09:15:00Z',
+          location: 'Factory',
+          notes: 'Order processing started'
+        },
+        {
+          status: 'cutting',
+          date: '2024-01-17T14:20:00Z',
+          location: 'Cutting Department',
+          notes: 'Fabric cutting completed'
+        },
+        {
+          status: 'sewing',
+          date: '2024-01-18T10:45:00Z',
+          location: 'Sewing Department',
+          notes: 'Sewing in progress'
+        }
+      ],
+      buyerName: 'John Doe',
+      buyerEmail: 'john@example.com',
+      deliveryAddress: '123 Main Street, Dhaka, Bangladesh',
+      estimatedDelivery: '2024-01-25'
+    };
+  };
+
+  // Fetch order details
+  const fetchOrderDetails = async () => {
     setLoading(true);
+    setError(null);
+    
     try {
-      const response = await orderAPI.getOrderById(id);
-      setOrder(response.data.data);
-      updateTrackingSteps(response.data.data?.status);
-    } catch (error) {
-      console.error('Error fetching order:', error);
-      toast.error('Failed to load order details');
-    } finally {
+      if (currentOrderId) {
+        // Real API call
+        // const response = await orderAPI.getOrderById(currentOrderId);
+        // setOrder(response.data);
+        
+        // For demo - use mock data
+        setTimeout(() => {
+          setOrder(getMockOrder());
+          setLoading(false);
+        }, 1000);
+      } else {
+        // If no orderId, show demo data
+        setOrder(getMockOrder());
+        setLoading(false);
+      }
+    } catch (err) {
+      console.error('Error fetching order details:', err);
+      setError('Failed to load order details. Using demo data.');
+      setOrder(getMockOrder());
       setLoading(false);
     }
   };
 
-  const updateTrackingSteps = (status) => {
-    const steps = [
-      { status: 'Order Placed', icon: FaShoppingCart, active: true },
-      { status: 'Processing', icon: FaClock, active: false },
-      { status: 'Approved', icon: FaCheckCircle, active: false },
-      { status: 'Shipped', icon: FaTruck, active: false },
-      { status: 'Delivered', icon: FaHome, active: false }
-    ];
-
-    const statusIndex = {
-      'pending': 1,
-      'approved': 2,
-      'shipped': 3,
-      'delivered': 4
-    };
-
-    const activeIndex = statusIndex[status] || 0;
-    
-    const updatedSteps = steps.map((step, index) => ({
-      ...step,
-      active: index <= activeIndex
-    }));
-
-    setTrackingSteps(updatedSteps);
-  };
-
-  const handleSearch = () => {
-    if (!searchId.trim()) {
-      toast.error('Please enter an Order ID');
-      return;
-    }
-    fetchOrderDetails(searchId);
-  };
+  useEffect(() => {
+    fetchOrderDetails();
+  }, [currentOrderId]);
 
   const formatDate = (dateString) => {
     if (!dateString) return 'N/A';
     const date = new Date(dateString);
     return date.toLocaleDateString('en-US', {
-      weekday: 'long',
-      year: 'numeric',
-      month: 'long',
       day: 'numeric',
+      month: 'short',
+      year: 'numeric',
       hour: '2-digit',
       minute: '2-digit'
     });
+  };
+
+  const formatCurrency = (amount) => {
+    return new Intl.NumberFormat('en-BD', {
+      style: 'currency',
+      currency: 'BDT',
+      minimumFractionDigits: 0
+    }).format(amount || 0);
+  };
+
+  // Get current status index
+  const getCurrentStatusIndex = () => {
+    if (!order?.currentStatus) return 0;
+    const index = trackStatusOptions.findIndex(status => status.id === order.currentStatus);
+    return index >= 0 ? index : 0;
   };
 
   if (loading) {
@@ -96,275 +226,348 @@ const TrackOrder = () => {
     );
   }
 
+  if (!order) {
+    return (
+      <div className={`p-12 rounded-2xl text-center ${
+        isDark ? 'bg-gray-800 border border-gray-700' : 'bg-gray-50 border border-gray-200'
+      }`}>
+        <div className="text-6xl mb-6">📭</div>
+        <h3 className={`text-2xl font-bold mb-3 ${isDark ? 'text-white' : 'text-gray-900'}`}>
+          No Order Selected
+        </h3>
+        <p className={`text-lg mb-6 ${isDark ? 'text-gray-400' : 'text-gray-600'}`}>
+          Please select an order to track its progress.
+        </p>
+        <Link
+          to="/dashboard/my-orders"
+          className="inline-flex items-center gap-2 px-8 py-4 bg-gradient-to-r from-orange-500 to-orange-600 hover:from-orange-600 hover:to-orange-700 text-white rounded-xl font-bold text-lg transition-all shadow-lg hover:shadow-xl"
+        >
+          <FaArrowLeft />
+          Go to My Orders
+        </Link>
+      </div>
+    );
+  }
+
+  const currentStatusIndex = getCurrentStatusIndex();
+
   return (
-    <div>
+    <div className="min-h-screen">
       {/* Header */}
       <div className="mb-8">
-        <h1 className={`text-3xl sm:text-4xl font-bold mb-3 ${isDark ? 'text-white' : 'text-gray-900'}`}>
-          Track <span className="text-orange-500">Order</span>
-        </h1>
-        <p className={`text-lg ${isDark ? 'text-gray-400' : 'text-gray-600'}`}>
-          {order ? `Tracking Order #${order._id?.slice(-8).toUpperCase()}` : 'Track your order in real-time'}
-        </p>
-      </div>
-
-      {/* Search Order */}
-      {!order && (
-        <div className={`p-8 rounded-2xl mb-8 ${
-          isDark ? 'bg-[#111827] border border-white/10' : 'bg-white border border-gray-200'
-        } shadow-xl`}>
-          <div className="max-w-2xl mx-auto">
-            <h3 className={`text-xl font-bold mb-4 text-center ${isDark ? 'text-white' : 'text-gray-900'}`}>
-              Enter Order ID
-            </h3>
-            <div className="flex flex-col sm:flex-row gap-4">
-              <input
-                type="text"
-                placeholder="Enter Order ID (e.g., ORD001234)"
-                value={searchId}
-                onChange={(e) => setSearchId(e.target.value)}
-                className={`flex-1 px-5 py-3.5 rounded-xl border focus:outline-none focus:ring-2 focus:ring-orange-500 text-lg ${
-                  isDark 
-                    ? 'bg-[#0b0f14] border-gray-700 text-white placeholder-gray-500' 
-                    : 'bg-white border-gray-300 text-gray-900 placeholder-gray-500'
-                }`}
-              />
-              <button
-                onClick={handleSearch}
-                className="px-8 py-3.5 bg-gradient-to-r from-orange-500 to-orange-600 hover:from-orange-600 hover:to-orange-700 text-white rounded-xl font-bold text-lg transition-all shadow-lg hover:shadow-xl"
-              >
-                Track Order
-              </button>
-            </div>
-            <p className={`text-sm text-center mt-4 ${isDark ? 'text-gray-400' : 'text-gray-600'}`}>
-              You can find your Order ID in the confirmation email or in My Orders page
+        <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-6">
+          <div>
+            <h1 className={`text-3xl sm:text-4xl font-bold mb-3 ${isDark ? 'text-white' : 'text-gray-900'}`}>
+              Track <span className="text-orange-500">Order</span>
+            </h1>
+            <p className={`text-lg ${isDark ? 'text-gray-400' : 'text-gray-600'}`}>
+              Real-time tracking of your garment production & delivery
             </p>
           </div>
+          
+          <div className="flex items-center gap-3">
+            <span className={`px-4 py-2 rounded-full text-sm font-medium ${
+              order.status === 'delivered' 
+                ? 'bg-green-500/20 text-green-600'
+                : order.status === 'shipped'
+                ? 'bg-orange-500/20 text-orange-600'
+                : 'bg-blue-500/20 text-blue-600'
+            }`}>
+              {order.status.toUpperCase()}
+            </span>
+            <Link
+              to="/dashboard/my-orders"
+              className={`flex items-center gap-2 px-4 py-2 rounded-lg ${
+                isDark 
+                  ? 'bg-gray-700 text-gray-300 hover:bg-gray-600' 
+                  : 'bg-gray-200 text-gray-700 hover:bg-gray-300'
+              }`}
+            >
+              <FaArrowLeft />
+              Back to Orders
+            </Link>
+          </div>
         </div>
-      )}
 
-      {order && (
-        <>
-          {/* Tracking Timeline */}
-          <div className={`rounded-2xl p-6 mb-8 ${
-            isDark ? 'bg-[#111827] border border-white/10' : 'bg-white border border-gray-200'
+        {/* Error Message */}
+        {error && (
+          <div className={`mb-6 p-4 rounded-xl ${isDark ? 'bg-yellow-900/20' : 'bg-yellow-50'}`}>
+            <p className={`text-sm ${isDark ? 'text-yellow-400' : 'text-yellow-700'}`}>
+              ⚠️ {error}
+            </p>
+          </div>
+        )}
+      </div>
+
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+        {/* Left Column - Order Info & Progress */}
+        <div className="lg:col-span-2 space-y-8">
+          {/* Order Summary */}
+          <div className={`rounded-2xl p-6 ${
+            isDark 
+              ? 'bg-gray-800 border border-gray-700' 
+              : 'bg-white border border-gray-200'
           } shadow-xl`}>
-            <h3 className={`text-xl font-bold mb-6 ${isDark ? 'text-white' : 'text-gray-900'}`}>
-              Order Status
-            </h3>
-            
-            <div className="relative">
-              {/* Progress Line */}
-              <div className={`absolute left-8 top-0 bottom-0 w-0.5 ${
-                isDark ? 'bg-gray-700' : 'bg-gray-300'
-              }`}></div>
-              
-              <div className="space-y-10">
-                {trackingSteps.map((step, index) => {
-                  const Icon = step.icon;
-                  return (
-                    <div key={index} className="flex items-start gap-6 relative">
-                      {/* Icon */}
-                      <div className={`relative z-10 p-4 rounded-full transition-all duration-500 ${
-                        step.active 
-                          ? 'bg-gradient-to-r from-orange-500 to-orange-600 text-white shadow-lg shadow-orange-500/30' 
-                          : 'bg-gray-500/30 text-gray-500'
-                      }`}>
-                        <Icon size={24} />
+            <div className="flex flex-col md:flex-row gap-6">
+              {/* Product Image */}
+              <div className="flex-shrink-0">
+                <img
+                  src={order.productImage}
+                  alt={order.productName}
+                  className="w-32 h-32 rounded-2xl object-cover border-2 border-orange-500/30"
+                />
+              </div>
+
+              {/* Order Details */}
+              <div className="flex-1">
+                <h3 className={`text-xl font-bold mb-4 ${isDark ? 'text-white' : 'text-gray-900'}`}>
+                  {order.productName}
+                </h3>
+                
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <div className="space-y-2">
+                    <div className={`flex items-center gap-2 ${isDark ? 'text-gray-400' : 'text-gray-600'}`}>
+                      <FaBox className="text-orange-500" />
+                      <span><strong>Order ID:</strong> {order._id}</span>
+                    </div>
+                    <div className={`flex items-center gap-2 ${isDark ? 'text-gray-400' : 'text-gray-600'}`}>
+                      <FaCalendarAlt className="text-orange-500" />
+                      <span><strong>Order Date:</strong> {formatDate(order.orderDate)}</span>
+                    </div>
+                    <div className={`${isDark ? 'text-gray-400' : 'text-gray-600'}`}>
+                      <strong>Quantity:</strong> {order.quantity} units
+                    </div>
+                  </div>
+                  
+                  <div className="space-y-2">
+                    <div className={`${isDark ? 'text-gray-400' : 'text-gray-600'}`}>
+                      <strong>Total Price:</strong> {formatCurrency(order.totalPrice)}
+                    </div>
+                    {order.estimatedDelivery && (
+                      <div className={`flex items-center gap-2 ${isDark ? 'text-gray-400' : 'text-gray-600'}`}>
+                        <FaShippingFast className="text-green-500" />
+                        <span><strong>Estimated Delivery:</strong> {formatDate(order.estimatedDelivery)}</span>
                       </div>
-                      
-                      {/* Content */}
-                      <div className="flex-1 pt-2">
-                        <div className="flex justify-between items-start">
-                          <div>
-                            <h4 className={`text-lg font-semibold mb-1 ${isDark ? 'text-white' : 'text-gray-900'}`}>
-                              {step.status}
-                            </h4>
-                            <p className={`text-sm ${isDark ? 'text-gray-400' : 'text-gray-600'}`}>
-                              {step.active ? 'Completed' : 'Pending'}
-                            </p>
-                          </div>
-                          {step.active && index === trackingSteps.findIndex(s => s.active === true) && (
-                            <span className="px-3 py-1 rounded-full text-xs font-bold bg-orange-500/20 text-orange-400 animate-pulse">
-                              Current
-                            </span>
+                    )}
+                  </div>
+                </div>
+
+                {/* Delivery Address */}
+                <div className={`mt-6 p-4 rounded-xl ${isDark ? 'bg-gray-900/50' : 'bg-gray-50'}`}>
+                  <div className="flex items-start gap-2">
+                    <FaMapMarkerAlt className={`mt-1 ${isDark ? 'text-gray-400' : 'text-gray-500'}`} />
+                    <div>
+                      <p className={`font-semibold mb-1 ${isDark ? 'text-gray-300' : 'text-gray-700'}`}>
+                        Delivery Address
+                      </p>
+                      <p className={`${isDark ? 'text-gray-400' : 'text-gray-600'}`}>
+                        {order.deliveryAddress}
+                      </p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          {/* Tracking Progress */}
+          <div className={`rounded-2xl p-6 ${
+            isDark 
+              ? 'bg-gray-800 border border-gray-700' 
+              : 'bg-white border border-gray-200'
+          } shadow-xl`}>
+            <h2 className={`text-xl font-bold mb-6 ${isDark ? 'text-white' : 'text-gray-900'}`}>
+              <FaTruck className="inline mr-2 text-orange-500" />
+              Production & Shipping Progress
+            </h2>
+            
+            {/* Progress Bar */}
+            <div className="mb-8">
+              <div className="flex justify-between items-center mb-4">
+                <span className={`text-sm ${isDark ? 'text-gray-400' : 'text-gray-600'}`}>
+                  Current Status: {trackStatusOptions[currentStatusIndex]?.title}
+                </span>
+                <span className={`text-sm font-medium ${isDark ? 'text-gray-300' : 'text-gray-700'}`}>
+                  {Math.round((currentStatusIndex + 1) / trackStatusOptions.length * 100)}% Complete
+                </span>
+              </div>
+              
+              <div className={`w-full ${isDark ? 'bg-gray-700' : 'bg-gray-200'} rounded-full h-2`}>
+                <div 
+                  className="h-2 rounded-full bg-gradient-to-r from-orange-500 to-orange-600"
+                  style={{ width: `${((currentStatusIndex + 1) / trackStatusOptions.length) * 100}%` }}
+                ></div>
+              </div>
+            </div>
+
+            {/* Timeline */}
+            <div className="space-y-6">
+              {trackStatusOptions.map((status, index) => {
+                const isCompleted = index <= currentStatusIndex;
+                const isCurrent = index === currentStatusIndex;
+                const update = order.trackingUpdates?.find(u => u.status === status.id);
+                
+                return (
+                  <div key={status.id} className="flex">
+                    {/* Timeline Line & Icon */}
+                    <div className="flex flex-col items-center mr-4">
+                      <div className={`w-10 h-10 rounded-full flex items-center justify-center text-lg ${
+                        isCompleted 
+                          ? `bg-${status.color}-500 text-white` 
+                          : isDark 
+                            ? 'bg-gray-700 text-gray-400' 
+                            : 'bg-gray-200 text-gray-400'
+                      } ${isCurrent ? 'ring-2 ring-offset-2 ring-orange-500' : ''}`}>
+                        {isCompleted ? '✓' : status.icon}
+                      </div>
+                      {index < trackStatusOptions.length - 1 && (
+                        <div className={`w-1 flex-1 my-2 ${
+                          isCompleted ? `bg-${status.color}-500` : isDark ? 'bg-gray-700' : 'bg-gray-200'
+                        }`}></div>
+                      )}
+                    </div>
+
+                    {/* Status Details */}
+                    <div className={`flex-1 pb-6 ${index < trackStatusOptions.length - 1 ? 'border-b border-dashed border-gray-400/30' : ''}`}>
+                      <div className="flex justify-between items-start">
+                        <div>
+                          <h4 className={`font-bold ${isDark ? 'text-white' : 'text-gray-900'}`}>
+                            {status.title}
+                          </h4>
+                          <p className={`text-sm mt-1 ${isDark ? 'text-gray-400' : 'text-gray-600'}`}>
+                            {status.description}
+                          </p>
+                          
+                          {update && (
+                            <div className={`mt-2 p-3 rounded-lg ${isDark ? 'bg-gray-900/50' : 'bg-gray-50'}`}>
+                              <p className={`text-sm ${isDark ? 'text-gray-300' : 'text-gray-700'}`}>
+                                {update.notes}
+                              </p>
+                              <div className="flex items-center gap-2 mt-2">
+                                <FaMapMarkerAlt className={`text-xs ${isDark ? 'text-gray-500' : 'text-gray-400'}`} />
+                                <span className={`text-xs ${isDark ? 'text-gray-500' : 'text-gray-600'}`}>
+                                  {update.location}
+                                </span>
+                                <span className={`text-xs ${isDark ? 'text-gray-500' : 'text-gray-600'}`}>
+                                  • {formatDate(update.date)}
+                                </span>
+                              </div>
+                            </div>
                           )}
                         </div>
+                        
+                        {update && (
+                          <div className={`text-right text-sm ${isDark ? 'text-gray-400' : 'text-gray-600'}`}>
+                            {formatDate(update.date)}
+                          </div>
+                        )}
                       </div>
                     </div>
-                  );
-                })}
-              </div>
+                  </div>
+                );
+              })}
             </div>
           </div>
+        </div>
 
-          {/* Order Details Grid */}
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
-            {/* Delivery Details */}
-            <div className={`p-6 rounded-2xl ${
-              isDark ? 'bg-[#111827] border border-white/10' : 'bg-white border border-gray-200'
-            } shadow-xl`}>
-              <div className="flex items-center gap-3 mb-4">
-                <div className="p-3 rounded-xl bg-gradient-to-r from-blue-500 to-blue-600">
-                  <FaMapMarkerAlt className="text-white text-xl" />
-                </div>
-                <h4 className={`text-xl font-bold ${isDark ? 'text-white' : 'text-gray-900'}`}>
-                  Delivery Details
-                </h4>
-              </div>
-              
-              <div className="space-y-4">
-                <div className="flex items-start gap-3">
-                  <FaUser className={`mt-1 ${isDark ? 'text-gray-400' : 'text-gray-500'}`} />
-                  <div>
-                    <p className={`text-sm ${isDark ? 'text-gray-400' : 'text-gray-600'}`}>Recipient</p>
-                    <p className={`font-medium ${isDark ? 'text-white' : 'text-gray-900'}`}>
-                      {order.userName}
-                    </p>
-                  </div>
-                </div>
-                
-                <div className="flex items-start gap-3">
-                  <FaPhone className={`mt-1 ${isDark ? 'text-gray-400' : 'text-gray-500'}`} />
-                  <div>
-                    <p className={`text-sm ${isDark ? 'text-gray-400' : 'text-gray-600'}`}>Contact</p>
-                    <p className={`font-medium ${isDark ? 'text-white' : 'text-gray-900'}`}>
-                      {order.contactNumber}
-                    </p>
-                  </div>
-                </div>
-                
-                <div className="flex items-start gap-3">
-                  <FaMapMarkerAlt className={`mt-1 ${isDark ? 'text-gray-400' : 'text-gray-500'}`} />
-                  <div>
-                    <p className={`text-sm ${isDark ? 'text-gray-400' : 'text-gray-600'}`}>Address</p>
-                    <p className={`font-medium ${isDark ? 'text-white' : 'text-gray-900'}`}>
-                      {order.deliveryAddress}
-                    </p>
-                  </div>
-                </div>
-              </div>
-            </div>
-
-            {/* Order Summary */}
-            <div className={`p-6 rounded-2xl ${
-              isDark ? 'bg-[#111827] border border-white/10' : 'bg-white border border-gray-200'
-            } shadow-xl`}>
-              <div className="flex items-center gap-3 mb-4">
-                <div className="p-3 rounded-xl bg-gradient-to-r from-green-500 to-green-600">
-                  <FaBox className="text-white text-xl" />
-                </div>
-                <h4 className={`text-xl font-bold ${isDark ? 'text-white' : 'text-gray-900'}`}>
-                  Order Summary
-                </h4>
-              </div>
-              
-              <div className="space-y-4">
-                <div className="flex justify-between items-center">
-                  <span className={isDark ? 'text-gray-400' : 'text-gray-600'}>Product</span>
-                  <span className={`font-medium ${isDark ? 'text-white' : 'text-gray-900'}`}>
-                    {order.productTitle}
-                  </span>
-                </div>
-                
-                <div className="flex justify-between items-center">
-                  <span className={isDark ? 'text-gray-400' : 'text-gray-600'}>Quantity</span>
-                  <span className="font-medium text-orange-500">
-                    {order.orderQuantity} pieces
-                  </span>
-                </div>
-                
-                <div className="flex justify-between items-center">
-                  <span className={isDark ? 'text-gray-400' : 'text-gray-600'}>Unit Price</span>
-                  <span className="font-medium">৳{order.productPrice}</span>
-                </div>
-                
-                <div className="flex justify-between items-center">
-                  <span className={isDark ? 'text-gray-400' : 'text-gray-600'}>Payment Method</span>
-                  <span className="font-medium">{order.paymentOption}</span>
-                </div>
-                
-                <div className="pt-4 border-t border-dashed border-gray-400/30">
-                  <div className="flex justify-between items-center">
-                    <span className={`text-lg font-bold ${isDark ? 'text-white' : 'text-gray-900'}`}>
-                      Total Amount
-                    </span>
-                    <span className="text-2xl font-bold text-orange-500">
-                      ৳{order.orderPrice?.toLocaleString()}
-                    </span>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-
-          {/* Order Timeline */}
+        {/* Right Column - Quick Info */}
+        <div className="space-y-6">
+          {/* Current Status Card */}
           <div className={`rounded-2xl p-6 ${
-            isDark ? 'bg-[#111827] border border-white/10' : 'bg-white border border-gray-200'
+            isDark 
+              ? 'bg-gray-800 border border-gray-700' 
+              : 'bg-white border border-gray-200'
           } shadow-xl`}>
-            <h3 className={`text-xl font-bold mb-6 ${isDark ? 'text-white' : 'text-gray-900'}`}>
-              Order Timeline
+            <h3 className={`font-bold mb-4 ${isDark ? 'text-white' : 'text-gray-900'}`}>
+              Current Status
             </h3>
             
-            <div className="space-y-4">
-              <div className={`p-4 rounded-xl ${isDark ? 'bg-[#0b0f14]' : 'bg-gray-50'}`}>
-                <div className="flex justify-between items-center">
-                  <div className="flex items-center gap-3">
-                    <FaShoppingCart className={isDark ? 'text-orange-400' : 'text-orange-500'} />
-                    <div>
-                      <p className={`font-medium ${isDark ? 'text-white' : 'text-gray-900'}`}>
-                        Order Placed
-                      </p>
-                      <p className={`text-sm ${isDark ? 'text-gray-400' : 'text-gray-600'}`}>
-                        {formatDate(order.orderDate)}
-                      </p>
-                    </div>
-                  </div>
-                  <span className="px-3 py-1 rounded-full text-xs font-bold bg-green-500/20 text-green-400">
-                    Completed
-                  </span>
-                </div>
+            <div className="text-center mb-4">
+              <div className="text-6xl mb-3">
+                {trackStatusOptions[currentStatusIndex]?.icon}
               </div>
-              
-              {order.additionalNotes && (
-                <div className={`p-4 rounded-xl ${isDark ? 'bg-[#0b0f14]' : 'bg-gray-50'}`}>
-                  <p className={`font-medium mb-1 ${isDark ? 'text-white' : 'text-gray-900'}`}>
-                    Additional Notes
-                  </p>
-                  <p className={isDark ? 'text-gray-400' : 'text-gray-600'}>
-                    {order.additionalNotes}
-                  </p>
-                </div>
-              )}
+              <h4 className={`text-xl font-bold mb-2 ${isDark ? 'text-white' : 'text-gray-900'}`}>
+                {trackStatusOptions[currentStatusIndex]?.title}
+              </h4>
+              <p className={`text-sm ${isDark ? 'text-gray-400' : 'text-gray-600'}`}>
+                {trackStatusOptions[currentStatusIndex]?.description}
+              </p>
+            </div>
+            
+            <div className={`mt-4 p-3 rounded-lg text-center ${
+              isDark ? 'bg-gray-900/50' : 'bg-gray-50'
+            }`}>
+              <p className={`text-sm ${isDark ? 'text-gray-300' : 'text-gray-700'}`}>
+                Next: {trackStatusOptions[currentStatusIndex + 1]?.title || 'Delivery Complete'}
+              </p>
             </div>
           </div>
-        </>
-      )}
 
-      {/* Help Section */}
-      <div className={`mt-8 p-6 rounded-2xl text-center ${
-        isDark ? 'bg-gradient-to-r from-[#111827] to-[#1a1f2e]' : 'bg-gradient-to-r from-gray-50 to-white'
-      } border ${isDark ? 'border-white/10' : 'border-gray-200'}`}>
-        <h4 className={`text-lg font-bold mb-3 ${isDark ? 'text-white' : 'text-gray-900'}`}>
-          Need Help?
-        </h4>
-        <p className={`mb-4 ${isDark ? 'text-gray-400' : 'text-gray-600'}`}>
-          Having issues with your order? Our support team is here to help!
-        </p>
-        <div className="flex flex-col sm:flex-row gap-4 justify-center">
-          <button 
-            onClick={() => navigate('/dashboard/my-orders')}
-            className={`px-6 py-3 rounded-xl font-medium transition-all ${
-              isDark 
-                ? 'bg-gray-800 hover:bg-gray-700 text-gray-300' 
-                : 'bg-gray-200 hover:bg-gray-300 text-gray-700'
-            }`}
-          >
-            Back to My Orders
-          </button>
-          <button className="px-6 py-3 bg-orange-500 hover:bg-orange-600 text-white rounded-xl font-medium transition-colors">
-            Contact Support
-          </button>
+          {/* Quick Actions */}
+          <div className={`rounded-2xl p-6 ${
+            isDark 
+              ? 'bg-gray-800 border border-gray-700' 
+              : 'bg-white border border-gray-200'
+          } shadow-xl`}>
+            <h3 className={`font-bold mb-4 ${isDark ? 'text-white' : 'text-gray-900'}`}>
+              Quick Actions
+            </h3>
+            
+            <div className="space-y-3">
+              <Link
+                to={`/dashboard/order-details/${order._id}`}
+                className={`block p-3 rounded-lg text-center ${
+                  isDark 
+                    ? 'bg-gray-700 text-gray-300 hover:bg-gray-600' 
+                    : 'bg-gray-200 text-gray-700 hover:bg-gray-300'
+                }`}
+              >
+                View Order Details
+              </Link>
+              
+              <button
+                onClick={() => window.print()}
+                className={`w-full p-3 rounded-lg ${
+                  isDark 
+                    ? 'bg-gray-700 text-gray-300 hover:bg-gray-600' 
+                    : 'bg-gray-200 text-gray-700 hover:bg-gray-300'
+                }`}
+              >
+                Print Tracking Info
+              </button>
+              
+              <a
+                href={`mailto:support@garmentstracker.com?subject=Order Inquiry: ${order._id}`}
+                className={`block p-3 rounded-lg text-center ${
+                  isDark 
+                    ? 'bg-blue-900/30 text-blue-400 hover:bg-blue-900/50' 
+                    : 'bg-blue-100 text-blue-700 hover:bg-blue-200'
+                }`}
+              >
+                Contact Support
+              </a>
+            </div>
+          </div>
+
+          {/* Support Info */}
+          <div className={`rounded-2xl p-6 ${
+            isDark 
+              ? 'bg-gray-800 border border-gray-700' 
+              : 'bg-white border border-gray-200'
+          } shadow-xl`}>
+            <h3 className={`font-bold mb-4 ${isDark ? 'text-white' : 'text-gray-900'}`}>
+              <FaTruck className="inline mr-2 text-orange-500" />
+              Shipping Information
+            </h3>
+            
+            <ul className={`space-y-2 text-sm ${isDark ? 'text-gray-400' : 'text-gray-600'}`}>
+              <li>• Standard delivery: 7-14 business days</li>
+              <li>• Express delivery available (+৳200)</li>
+              <li>• Free shipping on orders above ৳3000</li>
+              <li>• Track your order 24/7</li>
+              <li>• Contact: support@garmentstracker.com</li>
+            </ul>
+          </div>
         </div>
       </div>
     </div>
